@@ -33,6 +33,16 @@ const router = createRouter({
           component: () => import('../modules/store/views/DashboardPage.vue')
         },
         {
+          path: 'store/products',
+          name: 'StoreProducts',
+          component: () => import('../modules/store/views/ProductsPage.vue')
+        },
+        {
+          path: 'store/order',
+          name: 'StoreOrder',
+          component: () => import('../modules/store/views/OrderPage.vue')
+        },
+        {
           path: 'pricing',
           name: 'Pricing',
           // Route level code-splitting

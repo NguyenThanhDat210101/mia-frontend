@@ -64,6 +64,39 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- Quick Actions -->
+    <div class="mb-10">
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+        <Icon icon="mdi-flash" color="warning"></Icon>
+        Thao tác nhanh
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card variant="flat" border class="p-6 cursor-pointer hover:border-blue-500/50 transition-all bg-neutral-800/40 group" @click="router.push('/store/order')">
+           <Icon icon="mdi-cart-plus" size="large" color="primary" class="mb-4 group-hover:scale-110 transition-transform"></Icon>
+           <div class="font-bold">Màn hình Order (POS)</div>
+           <div class="text-xs text-gray-500 mt-1">Bấm để bắt đầu bán hàng nhanh</div>
+        </Card>
+        
+        <Card variant="flat" border class="p-6 cursor-pointer hover:border-indigo-500/50 transition-all bg-neutral-800/40 group" @click="router.push('/store/products')">
+           <Icon icon="mdi-coffee-outline" size="large" color="secondary" class="mb-4 group-hover:scale-110 transition-transform"></Icon>
+           <div class="font-bold">Quản lý Sản phẩm</div>
+           <div class="text-xs text-gray-500 mt-1">Thêm đồ uống, cập nhật giá</div>
+        </Card>
+
+        <Card variant="flat" border class="p-6 cursor-pointer hover:border-green-500/50 transition-all bg-neutral-800/40 group opacity-50">
+           <Icon icon="mdi-account-star-outline" size="large" color="success" class="mb-4"></Icon>
+           <div class="font-bold">Khách hàng thân thiết</div>
+           <div class="text-xs text-gray-500 mt-1">Coming soon...</div>
+        </Card>
+
+        <Card variant="flat" border class="p-6 cursor-pointer hover:border-pink-500/50 transition-all bg-neutral-800/40 group opacity-50">
+           <Icon icon="mdi-chart-line" size="large" color="pink-lighten-2" class="mb-4"></Icon>
+           <div class="font-bold">Báo cáo chi tiết</div>
+           <div class="text-xs text-gray-500 mt-1">Coming soon...</div>
+        </Card>
+      </div>
+    </div>
+
     <!-- Overview Stats with Tailwind Grid -->
     <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Skeleton v-for="n in 3" :key="n" class="h-44 rounded-2xl" />
