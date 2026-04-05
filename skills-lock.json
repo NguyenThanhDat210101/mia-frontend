@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "vue": {
+      "source": "vercel-labs/json-render",
+      "sourceType": "github",
+      "computedHash": "c11732dd40f5c030b1e89eebf10c61c01966961f168bb11d99faf568eb5e36e8"
+    }
+  }
+}
