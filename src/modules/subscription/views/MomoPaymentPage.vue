@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import Card from '../../../components/atoms/Card.vue';
+import Icon from '../../../components/atoms/Icon.vue';
+import Btn from '../../../components/atoms/Btn.vue';
+import ProgressCircular from '../../../components/atoms/ProgressCircular.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -28,13 +32,13 @@ onMounted(() => {
 <template>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full min-h-screen flex flex-col items-center justify-center">
     
-    <v-card class="w-full rounded-3xl elevation-12 bg-grey-darken-4 border border-white/10 overflow-hidden">
+    <Card class="w-full rounded-3xl elevation-12 border border-white/10 overflow-hidden">
       <div class="bg-gradient-to-r from-pink-500 to-rose-500 p-6 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <v-btn icon="mdi-arrow-left" variant="text" color="white" @click="goBack"></v-btn>
+          <Btn icon="mdi-arrow-left" variant="text" color="white" @click="goBack"></Btn>
           <h2 class="text-2xl md:text-3xl font-bold text-white mb-0">Thanh Toán Trực Tuyến</h2>
         </div>
-        <v-icon icon="mdi-shield-check" size="x-large" color="white"></v-icon>
+        <Icon icon="mdi-shield-check" size="x-large" color="white"></Icon>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2">
@@ -61,7 +65,7 @@ onMounted(() => {
 
           <div class="mt-8 p-4 bg-pink-500/10 rounded-xl border border-pink-500/20">
             <div class="flex items-start gap-3">
-              <v-icon icon="mdi-information" color="pink-lighten-2" class="mt-0.5"></v-icon>
+              <Icon icon="mdi-information" color="pink-lighten-2" class="mt-0.5"></Icon>
               <p class="text-sm text-pink-lighten-4 mb-0 leading-relaxed">
                 Vui lòng không tắt trình duyệt trong quá trình thanh toán. Hệ thống sẽ tự động cập nhật trạng thái khi giao dịch thành công.
               </p>
@@ -87,17 +91,17 @@ onMounted(() => {
 
           <div class="text-center h-16">
             <div v-if="isChecking" class="flex flex-col items-center gap-2">
-              <v-progress-circular indeterminate color="pink" size="24"></v-progress-circular>
+              <ProgressCircular indeterminate color="pink" size="24"></ProgressCircular>
               <span class="text-sm text-medium-emphasis">Đang chờ thanh toán...</span>
             </div>
             <div v-else class="flex flex-col items-center gap-2 text-success">
-              <v-icon icon="mdi-check-circle" size="large"></v-icon>
+              <Icon icon="mdi-check-circle" size="large"></Icon>
               <span class="text-sm font-bold">Thanh toán thành công!</span>
             </div>
           </div>
         </div>
       </div>
-    </v-card>
+    </Card>
   </div>
 </template>
 

@@ -1,5 +1,14 @@
 <script setup lang="ts">
-// Dashboard View
+import { ref } from 'vue';
+import Card from '../../../components/atoms/Card.vue';
+import Icon from '../../../components/atoms/Icon.vue';
+import Btn from '../../../components/atoms/Btn.vue';
+import Skeleton from '../../../components/atoms/Skeleton.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const isLoading = ref(true);
+
 </script>
 
 <template>
@@ -11,51 +20,49 @@
     </div>
 
     <!-- Alert Requirement -->
-    <v-alert
-      color="warning"
-      variant="tonal"
-      icon="mdi-alert"
-      class="mb-8 rounded-xl border border-warning/30 bg-warning/5 backdrop-blur-sm"
-      prominent
-    >
-      <div class="font-medium text-base">
-        Tài khoản của bạn hiện chưa có Gói dịch vụ (Subscription) nào. Bạn vui lòng nâng cấp để mở khóa đầy đủ tính năng.
+    <div class="mb-8 p-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 backdrop-blur-sm flex flex-col md:flex-row items-start md:items-center gap-4">
+      <Icon icon="mdi-alert" color="warning" size="x-large" class="shrink-0 text-yellow-500"></Icon>
+      <div class="flex-1">
+        <div class="font-medium text-base text-yellow-500">
+          Tài khoản của bạn hiện chưa có Gói dịch vụ (Subscription) nào. Bạn vui lòng nâng cấp để mở khóa đầy đủ tính năng.
+        </div>
       </div>
-      
-      <template v-slot:append>
-        <v-btn color="warning" variant="elevated" to="/pricing" class="font-black ml-4 text-none tracking-wide rounded-lg" elevation="4">
+      <div class="shrink-0 mt-4 md:mt-0">
+        <Btn color="warning" variant="elevated" rounded="lg" @click="router.push('/pricing')">
           XEM BẢNG GIÁ
-        </v-btn>
-      </template>
-    </v-alert>
+        </Btn>
+      </div>
+    </div>
 
     <!-- Overview Stats with Tailwind Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      
-      <v-card variant="flat" color="grey-darken-4" class="p-6 border border-white/5 rounded-2xl relative overflow-hidden group hover:border-primary/50 transition-colors">
+    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Skeleton v-for="n in 3" :key="n" class="h-44 rounded-2xl" />
+    </div>
+
+    <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Card variant="flat" border class="p-6 rounded-2xl relative overflow-hidden group hover:border-blue-500/50 transition-colors bg-gray-900 border-white/5">
         <div class="absolute -right-6 -top-6 opacity-5 group-hover:opacity-10 transition-opacity">
-           <v-icon icon="mdi-currency-usd" size="120"></v-icon>
+           <Icon icon="mdi-currency-usd" size="text-[120px]"></Icon>
         </div>
-        <div class="text-medium-emphasis text-sm font-bold tracking-wide mb-2 uppercase">Doanh thu hôm nay</div>
+        <div class="text-gray-400 text-sm font-bold tracking-wide mb-2 uppercase">Doanh thu hôm nay</div>
         <div class="text-4xl font-black text-white">0đ</div>
-      </v-card>
+      </Card>
       
-      <v-card variant="flat" color="grey-darken-4" class="p-6 border border-white/5 rounded-2xl relative overflow-hidden group hover:border-info/50 transition-colors">
+      <Card variant="flat" border class="p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-500/50 transition-colors bg-gray-900 border-white/5">
         <div class="absolute -right-6 -top-6 opacity-5 group-hover:opacity-10 transition-opacity">
-           <v-icon icon="mdi-package-variant" size="120"></v-icon>
+           <Icon icon="mdi-package-variant" size="text-[120px]"></Icon>
         </div>
-        <div class="text-medium-emphasis text-sm font-bold tracking-wide mb-2 uppercase">Đơn hàng mới</div>
+        <div class="text-gray-400 text-sm font-bold tracking-wide mb-2 uppercase">Đơn hàng mới</div>
         <div class="text-4xl font-black text-white">0</div>
-      </v-card>
+      </Card>
       
-      <v-card variant="flat" color="grey-darken-4" class="p-6 border border-white/5 rounded-2xl relative overflow-hidden group hover:border-success/50 transition-colors">
+      <Card variant="flat" border class="p-6 rounded-2xl relative overflow-hidden group hover:border-green-500/50 transition-colors bg-gray-900 border-white/5">
         <div class="absolute -right-6 -top-6 opacity-5 group-hover:opacity-10 transition-opacity">
-           <v-icon icon="mdi-account-group" size="120"></v-icon>
+           <Icon icon="mdi-account-group" size="text-[120px]"></Icon>
         </div>
-        <div class="text-medium-emphasis text-sm font-bold tracking-wide mb-2 uppercase">Khách hàng</div>
+        <div class="text-gray-400 text-sm font-bold tracking-wide mb-2 uppercase">Khách hàng</div>
         <div class="text-4xl font-black text-white">0</div>
-      </v-card>
-      
+      </Card>
     </div>
   </div>
 </template>

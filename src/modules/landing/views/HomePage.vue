@@ -1,0 +1,57 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+import Card from '../../../components/atoms/Card.vue';
+import Btn from '../../../components/atoms/Btn.vue';
+import Icon from '../../../components/atoms/Icon.vue';
+
+const router = useRouter();
+const goToPricing = () => router.push('/pricing');
+const goToSignup = () => router.push('/signup');
+
+const features = [
+  { icon: 'mdi-layers-triple-outline', title: 'Quản lý đa sàn', desc: 'Đồng bộ tự động Shopee, Lazada, TikTok Shop dễ dàng.' },
+  { icon: 'mdi-lightning-bolt', title: 'Real-time Sync', desc: 'Tốc độ cập nhật tồn kho dưới 1s bằng giao thức Reverb WebSockets.' },
+  { icon: 'mdi-chart-bell-curve-cumulative', title: 'Báo cáo thông minh', desc: 'Phân tích doanh thu và dự báo xu hướng sản phẩm tự động.' },
+  { icon: 'mdi-security', title: 'Bảo mật tuyệt đối', desc: 'Hệ thống hạ tầng Cloud đạt chuẩn, an toàn dữ liệu khách hàng.' }
+];
+</script>
+
+<template>
+  <div class="flex-1 w-full flex flex-col justify-center items-center overflow-hidden relative py-12">
+    <!-- Hero Background Effects -->
+    <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/20 blur-[120px] rounded-full pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[50%] bg-indigo-500/20 blur-[150px] rounded-full pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 relative z-10 text-center flex-1 flex flex-col justify-center">
+      <h1 class="text-5xl md:text-7xl font-black mb-6 tracking-tight text-white leading-tight drop-shadow-lg">
+        Giải pháp Quản lý Kho <br/>
+        <span class="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Dành cho Nhà bán lẻ</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+        Hệ thống tự động hoá quy trình bán hàng đa kênh, kiểm soát tồn kho và tối ưu tài chính với tốc độ hiển thị Real-time.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <Btn color="primary" size="x-large" rounded="xl" @click="goToSignup" icon="mdi-rocket" class="shadow-lg shadow-blue-500/20">
+          <span class="ml-2">Bắt đầu Miễn phí</span>
+        </Btn>
+        <Btn color="white" variant="outlined" size="x-large" rounded="xl" @click="goToPricing">
+          Xem Bảng Giá
+        </Btn>
+      </div>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10 w-full mt-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card v-for="(feat, idx) in features" :key="idx" variant="flat" class="p-8 hover:-translate-y-2 transition-transform duration-300 bg-gray-900/60 backdrop-blur-md border border-white/10 group cursor-default">
+          <div class="h-14 w-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <Icon :icon="feat.icon" size="large" color="primary"></Icon>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">{{ feat.title }}</h3>
+          <p class="text-gray-400 leading-relaxed text-sm">{{ feat.desc }}</p>
+        </Card>
+      </div>
+    </div>
+  </div>
+</template>

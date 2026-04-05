@@ -9,6 +9,26 @@ const router = createRouter({
       children: [
         {
           path: '',
+          name: 'Home',
+          component: () => import('../modules/landing/views/HomePage.vue')
+        },
+        {
+          path: 'signin',
+          name: 'SignIn',
+          component: () => import('../modules/auth/views/SignInPage.vue')
+        },
+        {
+          path: 'signup',
+          name: 'SignUp',
+          component: () => import('../modules/auth/views/SignUpPage.vue')
+        },
+        {
+          path: 'verify-otp',
+          name: 'VerifyOtp',
+          component: () => import('../modules/auth/views/OtpVerifyPage.vue')
+        },
+        {
+          path: 'dashboard',
           name: 'Dashboard',
           component: () => import('../modules/store/views/DashboardPage.vue')
         },

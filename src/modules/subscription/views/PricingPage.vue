@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import Card from '../../../components/atoms/Card.vue';
+import Chip from '../../../components/atoms/Chip.vue';
+import Icon from '../../../components/atoms/Icon.vue';
+import Divider from '../../../components/atoms/Divider.vue';
+import Btn from '../../../components/atoms/Btn.vue';
+import Skeleton from '../../../components/atoms/Skeleton.vue';
 
 const router = useRouter();
+const isLoading = ref(true);
 
 interface Plan {
   id: string;
@@ -96,54 +103,59 @@ const selectPlan = (plan: Plan) => {
     </div>
 
     <!-- Bảng giá lưới bằng Tailwind Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto relative z-10">
+    <!-- Pricing Cards với Skeleton Loading -->
+    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+       <Skeleton v-for="n in 3" :key="n" type="card" class="h-[600px]" />
+    </div>
+
+    <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto relative z-10">
       
       <div 
         v-for="plan in plans" 
         :key="plan.id"
         class="flex"
       >
-        <v-card
+        <Card
           class="w-full rounded-3xl flex flex-col relative transition-all duration-300"
           :class="[
             plan.isPopular 
-              ? 'border-primary ring-2 ring-primary elevation-24 scale-100 md:scale-105 z-20 bg-grey-darken-3' 
-              : 'border-white/10 elevation-6 bg-grey-darken-4 md:my-4'
+              ? 'border-blue-500 ring-2 ring-blue-500 scale-100 md:scale-105 z-20 shadow-2xl' 
+              : 'border-white/10 shadow-md md:my-4'
           ]"
           variant="flat"
           border
         >
           <!-- Nhãn dán Phổ Biến -->
           <div v-if="plan.isPopular" class="absolute -top-5 right-6 z-30">
-             <v-chip color="primary" variant="elevated" class="font-black tracking-wider shadow-lg" elevation="8" size="large">
-                 <v-icon start icon="mdi-crown"></v-icon>
+             <Chip color="primary" variant="elevated" class="font-black tracking-wider shadow-lg" elevation="8" size="large">
+                 <Icon icon="mdi-crown" class="mr-1"></Icon>
                  PHỔ BIẾN NHẤT
-             </v-chip>
+             </Chip>
           </div>
 
           <!-- Header -->
           <div class="p-8 pb-4 text-center">
             <h3 class="text-2xl font-bold mb-2">{{ plan.name }}</h3>
-            <p class="text-medium-emphasis text-sm mb-6 min-h-[40px] px-4">{{ plan.description }}</p>
+            <p class="text-gray-400 text-sm mb-6 min-h-[40px] px-4">{{ plan.description }}</p>
 
             <div class="flex items-end justify-center mb-1">
               <span class="text-5xl font-black text-white leading-none">{{ plan.price }}</span>
-              <span class="text-base text-medium-emphasis font-medium ml-1 mb-1">{{ plan.duration }}</span>
+              <span class="text-base text-gray-400 font-medium ml-1 mb-1">{{ plan.duration }}</span>
             </div>
 
-            <div class="text-success text-sm font-bold h-6 mt-2 flex items-center justify-center gap-1">
-              <v-icon v-if="plan.discount" icon="mdi-tag" size="small"></v-icon>
+            <div class="text-green-500 text-sm font-bold h-6 mt-2 flex items-center justify-center gap-1">
+              <Icon v-if="plan.discount" icon="mdi-tag" size="small"></Icon>
               {{ plan.discount || '' }}
             </div>
           </div>
 
-          <v-divider class="mx-8 mb-6 border-white/10"></v-divider>
+          <Divider class="mx-8 mb-6 border-white/10"></Divider>
 
           <!-- Danh sách tính năng -->
           <div class="flex-1 px-8 pb-8">
             <ul class="flex flex-col gap-4">
-              <li v-for="(feature, i) in plan.features" :key="i" class="flex items-start text-grey-lighten-2">
-                <v-icon icon="mdi-check-circle" color="primary" class="mr-3 shrink-0 mt-0.5" size="small"></v-icon>
+              <li v-for="(feature, i) in plan.features" :key="i" class="flex items-start text-gray-200">
+                <Icon icon="mdi-check-circle" color="primary" class="mr-3 shrink-0 mt-0.5" size="small"></Icon>
                 <span class="leading-relaxed font-medium">{{ feature }}</span>
               </li>
             </ul>
@@ -151,19 +163,19 @@ const selectPlan = (plan: Plan) => {
 
           <!-- Nút hành động -->
           <div class="p-8 pt-0">
-             <v-btn
+             <Btn
               block
               :color="plan.buttonColor"
               :variant="plan.buttonVariant"
               size="x-large"
               rounded="xl"
-              class="font-black tracking-wider shadow-lg hover:opacity-90 active:scale-95 transition-all"
+              class="font-black tracking-wider hover:opacity-90 active:scale-95 transition-all"
               @click="selectPlan(plan)"
             >
               CHỌN GÓI NÀY
-            </v-btn>
+            </Btn>
           </div>
-        </v-card>
+        </Card>
       </div>
 
     </div>
