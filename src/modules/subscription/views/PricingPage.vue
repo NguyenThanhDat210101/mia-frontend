@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Card from '../../../components/atoms/Card.vue';
 import Chip from '../../../components/atoms/Chip.vue';
@@ -10,6 +10,12 @@ import Skeleton from '../../../components/atoms/Skeleton.vue';
 
 const router = useRouter();
 const isLoading = ref(true);
+
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1500);
+});
 
 interface Plan {
   id: string;

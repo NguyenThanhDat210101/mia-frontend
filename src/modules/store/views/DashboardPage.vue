@@ -1,22 +1,52 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Card from '../../../components/atoms/Card.vue';
 import Icon from '../../../components/atoms/Icon.vue';
 import Btn from '../../../components/atoms/Btn.vue';
 import Skeleton from '../../../components/atoms/Skeleton.vue';
+import InputDate from '../../../components/atoms/InputDate.vue';
+import Select from '../../../components/atoms/Select.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const isLoading = ref(true);
+
+const filterDate = ref(new Date().toISOString().substr(0, 10));
+const selectedStore = ref('');
+const storeOptions = [
+  { label: 'Chi nhánh Quận 1', value: 'q1' },
+  { label: 'Chi nhánh Thủ Đức', value: 'td' },
+  { label: 'Kho Tổng Hóc Môn', value: 'hm' },
+];
+
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000);
+});
 
 </script>
 
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
     
-    <div class="mb-8">
-      <h1 class="text-3xl font-black mb-2">Tổng quan Cửa hàng</h1>
-      <p class="text-medium-emphasis">Chào mừng bạn quay lại hệ thống quản trị Store Manager.</p>
+    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <h1 class="text-3xl font-black mb-2">Tổng quan Cửa hàng</h1>
+        <p class="text-medium-emphasis">Chào mừng bạn quay lại hệ thống quản trị Store Manager.</p>
+      </div>
+
+      <!-- Quick Filter Demo -->
+      <div v-if="!isLoading" class="flex flex-col sm:flex-row gap-3 min-w-[400px]">
+        <div class="flex-1">
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Ngày báo cáo</label>
+          <InputDate v-model="filterDate" />
+        </div>
+        <div class="flex-1">
+          <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Cửa hàng</label>
+          <Select v-model="selectedStore" :options="storeOptions" placeholder="Chọn chi nhánh" />
+        </div>
+      </div>
     </div>
 
     <!-- Alert Requirement -->

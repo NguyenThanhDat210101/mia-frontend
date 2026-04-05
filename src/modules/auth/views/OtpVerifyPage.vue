@@ -5,6 +5,7 @@ import Card from '../../../components/atoms/Card.vue';
 import Btn from '../../../components/atoms/Btn.vue';
 import Icon from '../../../components/atoms/Icon.vue';
 import OtpInput from '../../../components/atoms/OtpInput.vue';
+import Span from '../../../components/atoms/Span.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -43,10 +44,10 @@ const handleResend = () => {
           <Icon icon="mdi-shield-lock" size="x-large"></Icon>
         </div>
         <h2 class="text-2xl font-black text-white">Xác thực OTP</h2>
-        <p class="text-gray-400 mt-3 text-sm leading-relaxed max-w-[280px] mx-auto">
+        <Span size="sm" class="text-gray-400 mt-3 block leading-relaxed max-w-[280px] mx-auto">
           Mã xác nhận 6 số đã được gửi tới email <br/>
-          <span class="text-white font-bold">{{ email }}</span>
-        </p>
+          <Span color="white" weight="bold">{{ email }}</Span>
+        </Span>
       </div>
 
       <form @submit.prevent="handleVerify" class="space-y-8 mt-8">
@@ -71,7 +72,7 @@ const handleResend = () => {
       </form>
 
       <div class="mt-8 text-center pt-2">
-        <p class="text-sm text-gray-400 mb-2">Chưa nhận được mã?</p>
+        <Span size="sm" class="text-gray-400 mb-2 block">Chưa nhận được mã?</Span>
         <Btn variant="text" color="primary" @click="handleResend" :class="{ 'pointer-events-none opacity-50': isResending }" class="uppercase text-xs font-bold w-full mx-auto justify-center">
           <span v-if="!isResending">Gửi lại mã</span>
           <span v-else>Đã gửi lại ✔</span>
