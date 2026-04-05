@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import type { OtpInputProps } from './types';
 
-const props = withDefaults(defineProps<{
-  length?: number;
-  modelValue?: string;
-}>(), {
+const props = withDefaults(defineProps<OtpInputProps>(), {
   length: 6,
   modelValue: ''
 });

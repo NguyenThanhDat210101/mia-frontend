@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { CardProps } from './types';
 
-const props = defineProps<{
-  variant?: 'elevated' | 'flat' | 'outlined';
-  border?: boolean;
-}>();
+const props = defineProps<CardProps>();
 
 const cardClasses = computed(() => {
   const isOutlined = props.variant === 'outlined';

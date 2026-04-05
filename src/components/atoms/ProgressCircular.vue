@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { ProgressCircularProps } from './types';
 
-const props = withDefaults(defineProps<{
-  color?: string;
-  size?: string | number;
-  indeterminate?: boolean;
-}>(), {
+const props = withDefaults(defineProps<ProgressCircularProps>(), {
   color: 'primary',
   size: 24,
   indeterminate: true

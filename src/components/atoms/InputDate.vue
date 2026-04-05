@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import Icon from './Icon.vue';
+import type { InputDateProps } from './types';
 
-withDefaults(defineProps<{
-  modelValue: string;
-  placeholder?: string;
-  required?: boolean;
-  icon?: string;
-  class?: string;
-}>(), {
+withDefaults(defineProps<InputDateProps>(), {
   icon: 'mdi-calendar',
   required: false
 });

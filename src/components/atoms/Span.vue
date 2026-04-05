@@ -1,10 +1,6 @@
 <script setup lang="ts">
-// Span Atom
-defineProps<{
-  class?: string;
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | string;
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | 'large';
-}>();
+import type { SpanProps } from './types';
+defineProps<SpanProps>();
 </script>
 
 <template>

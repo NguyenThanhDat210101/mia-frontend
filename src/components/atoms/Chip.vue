@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { ChipProps } from './types';
 
-const props = withDefaults(defineProps<{
-  color?: string;
-  variant?: 'elevated' | 'flat' | 'outlined' | 'tonal' | 'plain' | 'text';
-  size?: 'small' | 'default' | 'large' | 'x-large';
-  elevation?: string | number;
-}>(), {
+const props = withDefaults(defineProps<ChipProps>(), {
   color: 'primary',
   variant: 'elevated',
   size: 'default',

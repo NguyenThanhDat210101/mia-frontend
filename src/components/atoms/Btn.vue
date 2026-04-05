@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useSlots } from 'vue';
 import Icon from './Icon.vue';
+import type { BtnProps } from './types';
 
-const props = withDefaults(defineProps<{
-  color?: string;
-  variant?: 'elevated' | 'flat' | 'outlined' | 'tonal' | 'plain' | 'text';
-  size?: 'small' | 'default' | 'large' | 'x-large';
-  block?: boolean;
-  rounded?: boolean | string;
-  icon?: string | boolean;
-}>(), {
+const props = withDefaults(defineProps<BtnProps>(), {
   variant: 'elevated',
   size: 'default',
 });
@@ -77,7 +71,6 @@ const btnClasses = computed(() => {
   return [bgClass, textClass, borderClass, hoverClass, sizeClass, blockClass, roundedClass, shadowClass, 'items-center justify-center font-bold tracking-wide transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer'];
 });
 
-import { useSlots } from 'vue';
 const slots = useSlots();
 const slotsUsed = () => {
     return !!slots.default;

@@ -1,15 +1,8 @@
 <script setup lang="ts">
 import Icon from './Icon.vue';
+import type { InputProps } from './types';
 
-withDefaults(defineProps<{
-  modelValue: string | number;
-  type?: string;
-  placeholder?: string;
-  required?: boolean;
-  icon?: string;
-  error?: string;
-  class?: string;
-}>(), {
+withDefaults(defineProps<InputProps>(), {
   type: 'text',
   required: false
 });

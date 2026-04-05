@@ -7,6 +7,7 @@ import Icon from '../../../components/atoms/Icon.vue';
 import Divider from '../../../components/atoms/Divider.vue';
 import Btn from '../../../components/atoms/Btn.vue';
 import Skeleton from '../../../components/atoms/Skeleton.vue';
+import type { Plan } from '../types';
 
 const router = useRouter();
 const isLoading = ref(true);
@@ -16,19 +17,6 @@ onMounted(() => {
     isLoading.value = false;
   }, 1500);
 });
-
-interface Plan {
-  id: string;
-  name: string;
-  price: string;
-  duration: string;
-  description: string;
-  features: string[];
-  isPopular: boolean;
-  buttonColor: string;
-  buttonVariant: "outlined" | "elevated" | "flat" | "text" | "plain" | "tonal";
-  discount?: string;
-}
 
 const plans = ref<Plan[]>([
   {

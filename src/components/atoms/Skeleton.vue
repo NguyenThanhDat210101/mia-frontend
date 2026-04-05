@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { SkeletonProps } from './types';
 
-const props = withDefaults(defineProps<{
-  type?: 'text' | 'avatar' | 'button' | 'card' | 'image' | 'chip';
-  width?: string;
-  height?: string;
-  rounded?: 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'none';
-  class?: string;
-}>(), {
+const props = withDefaults(defineProps<SkeletonProps>(), {
   type: 'text',
   rounded: 'md',
 });

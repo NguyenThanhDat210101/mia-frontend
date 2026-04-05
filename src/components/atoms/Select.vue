@@ -1,19 +1,8 @@
 <script setup lang="ts">
 import Icon from './Icon.vue';
+import type { SelectProps } from './types';
 
-interface Option {
-  label: string;
-  value: any;
-}
-
-withDefaults(defineProps<{
-  modelValue: any;
-  options: Option[];
-  placeholder?: string;
-  icon?: string;
-  leftIcon?: string;
-  class?: string;
-}>(), {
+withDefaults(defineProps<SelectProps>(), {
   icon: 'mdi-chevron-down',
   placeholder: 'Chọn một giá trị'
 });

@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { IconProps } from './types';
 
-const props = defineProps<{
-  icon: string;
-  color?: string;
-  size?: 'small' | 'default' | 'large' | 'x-large' | string;
-}>();
+const props = defineProps<IconProps>();
 
 const sizeClasses = computed(() => {
   switch (props.size) {
