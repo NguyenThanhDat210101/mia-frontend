@@ -79,7 +79,7 @@ const slotsUsed = () => {
 </script>
 
 <template>
-  <button :class="btnClasses" @click="$emit('click')">
+  <button :class="btnClasses" v-bind="$attrs" @click="$emit('click')">
     <Icon v-if="typeof icon === 'string' && !slotsUsed()" :icon="icon" :size="size === 'x-large' ? 'large' : 'default'" class="shrink-0" />
     <span v-if="typeof icon === 'string' && slotsUsed()" class="mr-2">
       <Icon :icon="icon" :size="size === 'x-large' ? 'large' : 'default'" />

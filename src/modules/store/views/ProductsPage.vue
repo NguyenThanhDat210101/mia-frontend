@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useProductStore } from '../store/product.store';
 import Card from '../../../components/atoms/Card.vue';
 import Btn from '../../../components/atoms/Btn.vue';
 import Icon from '../../../components/atoms/Icon.vue';
@@ -7,16 +8,15 @@ import Input from '../../../components/atoms/Input.vue';
 import Select from '../../../components/atoms/Select.vue';
 import Label from '../../../components/atoms/Label.vue';
 import Chip from '../../../components/atoms/Chip.vue';
-import type { Product } from '../types';
+import type { Product, Category } from '../types';
 
-const products = ref<Product[]>([
-  { id: '1', name: 'Cà phê Đen Đá', category: 'Coffee', price: 29000, status: 'active' },
-  { id: '2', name: 'Bạc Xỉu', category: 'Coffee', price: 35000, status: 'active' },
-  { id: '3', name: 'Trà Đào Cam Sả', category: 'Tea', price: 45000, status: 'active' },
-  { id: '4', name: 'Nước Cam Ép', category: 'Juice', price: 40000, status: 'active' },
-]);
+const productStore = useProductStore();
 
-const categories = [
+onMounted(() => {
+  productStore.fetchProducts();
+});
+
+const categories: { label: string; value: Category }[] = [
   { label: 'Cà phê', value: 'Coffee' },
   { label: 'Trà', value: 'Tea' },
   { label: 'Nước ép', value: 'Juice' },
@@ -27,19 +27,22 @@ const newProduct = ref<Partial<Product>>({
   name: '',
   category: 'Coffee',
   price: 0,
-  status: 'active'
+  is_active: true
 });
 
-const addProduct = () => {
+const addProduct = async () => {
   if (newProduct.value.name && newProduct.value.price) {
-    products.value.push({
-      id: Date.now().toString(),
-      name: newProduct.value.name || '',
-      category: newProduct.value.category || 'Coffee',
-      price: Number(newProduct.value.price) || 0,
-      status: 'active'
-    });
-    newProduct.value = { name: '', category: 'Coffee', price: 0, status: 'active' };
+    try {
+      await productStore.addProduct({
+        name: newProduct.value.name,
+        category: newProduct.value.category,
+        price: Number(newProduct.value.price),
+        is_active: true
+      });
+      newProduct.value = { name: '', category: 'Coffee', price: 0, is_active: true };
+    } catch (error) {
+      alert('Lỗi khi thêm sản phẩm');
+    }
   }
 };
 </script>
@@ -79,9 +82,9 @@ const addProduct = () => {
         </div>
       </Card>
 
-      <!-- Danh sách sản phẩm -->
       <div class="lg:col-span-2 space-y-4">
-        <div v-for="item in products" :key="item.id" class="group">
+        <div v-if="productStore.loading" class="text-center py-10">Đang tải...</div>
+        <div v-for="item in productStore.products" :key="item.id" class="group">
           <Card variant="flat" border class="p-5 flex items-center justify-between hover:border-blue-500/50 transition-all cursor-pointer bg-neutral-800/40">
             <div class="flex items-center gap-4">
               <div class="w-14 h-14 bg-neutral-700 rounded-2xl flex items-center justify-center text-2xl">
@@ -95,7 +98,9 @@ const addProduct = () => {
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <Chip color="success" size="small" variant="tonal">Đang bán</Chip>
+              <Chip :color="item.is_active ? 'success' : 'error'" size="small" variant="tonal">
+                {{ item.is_active ? 'Đang bán' : 'Ngừng bán' }}
+              </Chip>
               <Btn variant="text" size="small" icon="mdi-dots-vertical"></Btn>
             </div>
           </Card>

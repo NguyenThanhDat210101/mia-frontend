@@ -86,3 +86,18 @@ export interface ProgressCircularProps {
 export interface LabelProps {
   class?: string;
 }
+
+export interface AvatarProps {
+  size?: number | string;
+  color?: string;
+  icon?: string;
+  src?: string;
+  alt?: string;
+  class?: string;
+}
+
+export interface MenuProps {
+  minWidth?: string | number;
+  rounded?: boolean | string;
+  offset?: number | string;
+}

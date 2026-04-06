@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '../modules/auth/store/auth.store'
+import { RouteName } from './types'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,53 +11,87 @@ const router = createRouter({
       children: [
         {
           path: '',
-          name: 'Home',
+          name: RouteName.Home,
           component: () => import('../modules/landing/views/HomePage.vue')
         },
         {
           path: 'signin',
-          name: 'SignIn',
+          name: RouteName.SignIn,
           component: () => import('../modules/auth/views/SignInPage.vue')
         },
         {
           path: 'signup',
-          name: 'SignUp',
+          name: RouteName.SignUp,
           component: () => import('../modules/auth/views/SignUpPage.vue')
         },
         {
           path: 'verify-otp',
-          name: 'VerifyOtp',
+          name: RouteName.VerifyOtp,
           component: () => import('../modules/auth/views/OtpVerifyPage.vue')
         },
         {
           path: 'dashboard',
-          name: 'Dashboard',
+          name: RouteName.Dashboard,
           component: () => import('../modules/store/views/DashboardPage.vue')
         },
         {
           path: 'store/products',
-          name: 'StoreProducts',
+          name: RouteName.StoreProducts,
           component: () => import('../modules/store/views/ProductsPage.vue')
         },
         {
           path: 'store/order',
-          name: 'StoreOrder',
+          name: RouteName.StoreOrder,
           component: () => import('../modules/store/views/OrderPage.vue')
         },
         {
           path: 'pricing',
-          name: 'Pricing',
+          name: RouteName.Pricing,
           // Route level code-splitting
           component: () => import('../modules/subscription/views/PricingPage.vue')
         },
         {
           path: 'payment/momo',
-          name: 'MomoPayment',
+          name: RouteName.MomoPayment,
           component: () => import('../modules/subscription/views/MomoPaymentPage.vue')
         }
       ]
     }
   ]
+})
+
+// Navigation Guard
+router.beforeEach(async (to) => {
+  const authStore = useAuthStore()
+  
+  // Danh sách các route công khai
+  const publicPages: string[] = [
+    RouteName.Home, 
+    RouteName.SignIn, 
+    RouteName.SignUp, 
+    RouteName.VerifyOtp, 
+    RouteName.ForgotPassword, 
+    RouteName.ResetPassword, 
+    RouteName.ChangePassword, 
+    RouteName.Pricing
+  ]
+  const authPages: string[] = [RouteName.SignIn, RouteName.SignUp]
+  
+  const isPublic = publicPages.includes(to.name as string)
+  const isAuthPage = authPages.includes(to.name as string)
+
+  // Khôi phục session nếu cần (chỉ chạy 1 lần khi load trang)
+  await authStore.init()
+
+  if (!authStore.isAuthenticated && !isPublic) {
+    // Nếu chưa đăng nhập và truy cập trang bảo mật -> Về SignIn
+    return { name: RouteName.SignIn }
+  }
+
+  if (authStore.isAuthenticated && isAuthPage) {
+    // Nếu đã đăng nhập mà cố vào SignIn/SignUp -> Sang Dashboard
+    return { name: RouteName.Dashboard }
+  }
 })
 
 export default router

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../store/auth.store';
 import Card from '../../../components/atoms/Card.vue';
 import Btn from '../../../components/atoms/Btn.vue';
 import Icon from '../../../components/atoms/Icon.vue';
@@ -10,17 +11,27 @@ import Input from '../../../components/atoms/Input.vue';
 import Span from '../../../components/atoms/Span.vue';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const email = ref('');
 const password = ref('');
 const isLoading = ref(false);
+const error = ref('');
 
-const handleSignIn = () => {
+const handleSignIn = async () => {
   isLoading.value = true;
-  setTimeout(() => {
+  error.value = '';
+  try {
+    await authStore.login({
+      email: email.value,
+      password: password.value
+    });
+    router.push('/dashboard');
+  } catch (err: any) {
+    error.value = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
+  } finally {
     isLoading.value = false;
-    router.push({ path: '/verify-otp', query: { email: email.value } });
-  }, 1000);
+  }
 };
 
 const goToSignup = () => router.push('/signup');
@@ -38,6 +49,10 @@ const goToSignup = () => router.push('/signup');
         </div>
         <h2 class="text-2xl font-black text-white">Đăng nhập</h2>
         <Span size="sm" class="text-gray-400 mt-2">Quản lý cửa hàng của bạn ngay hôm nay</Span>
+      </div>
+
+      <div v-if="error" class="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-xs text-center border-solid">
+        {{ error }}
       </div>
 
       <form @submit.prevent="handleSignIn" class="space-y-5">

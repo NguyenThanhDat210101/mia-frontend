@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../store/auth.store';
 import Card from '../../../components/atoms/Card.vue';
 import Btn from '../../../components/atoms/Btn.vue';
 import Icon from '../../../components/atoms/Icon.vue';
@@ -10,18 +11,36 @@ import Input from '../../../components/atoms/Input.vue';
 import Span from '../../../components/atoms/Span.vue';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const name = ref('');
 const email = ref('');
 const password = ref('');
+const passwordConfirmation = ref('');
 const isLoading = ref(false);
+const error = ref('');
 
-const handleSignUp = () => {
+const handleSignUp = async () => {
+  if (password.value !== passwordConfirmation.value) {
+    error.value = 'Mật khẩu xác nhận không khớp.';
+    return;
+  }
+
   isLoading.value = true;
-  setTimeout(() => {
-    isLoading.value = false;
+  error.value = '';
+  try {
+    await authStore.register({
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      password_confirmation: passwordConfirmation.value
+    });
     router.push('/dashboard');
-  }, 1000);
+  } catch (err: any) {
+    error.value = err.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.';
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const goToSignin = () => router.push('/signin');
@@ -36,6 +55,10 @@ const goToSignin = () => router.push('/signin');
       <div class="text-center mb-6">
         <h2 class="text-2xl font-black text-white">Bắt đầu dùng thử</h2>
         <Span size="sm" class="text-gray-400 mt-2">Tạo tài khoản Store Manager miễn phí</Span>
+      </div>
+
+      <div v-if="error" class="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-xs text-center border-solid">
+        {{ error }}
       </div>
 
       <form @submit.prevent="handleSignUp" class="space-y-4">
@@ -68,6 +91,17 @@ const goToSignin = () => router.push('/signin');
             type="password" 
             required 
             icon="mdi-lock-outline"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <div>
+          <Label>Xác nhận mật khẩu</Label>
+          <Input 
+            v-model="passwordConfirmation" 
+            type="password" 
+            required 
+            icon="mdi-lock-check-outline"
             placeholder="••••••••"
           />
         </div>

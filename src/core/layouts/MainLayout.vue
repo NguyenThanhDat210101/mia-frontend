@@ -1,9 +1,21 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../../modules/auth/store/auth.store'
+import { RouteName } from '../../router/types'
 import Icon from '../../components/atoms/Icon.vue'
 import Btn from '../../components/atoms/Btn.vue'
+import Avatar from '../../components/atoms/Avatar.vue'
+import Menu from '../../components/atoms/Menu.vue'
+import Card from '../../components/atoms/Card.vue'
+import Divider from '../../components/atoms/Divider.vue'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
+const handleLogout = async () => {
+  await authStore.logout()
+  router.push({ name: RouteName.SignIn })
+}
 </script>
 
 <template>
@@ -27,11 +39,54 @@ const router = useRouter()
             <Btn variant="text" color="white" class="hidden sm:flex text-gray-400" @click="router.push('/pricing')">
               Bảng giá
             </Btn>
-            <Btn color="primary" icon="mdi-login" @click="router.push('/signin')">
-              Đăng nhập
-            </Btn>
+            <!-- User Menu or Login Button -->
+            <template v-if="!authStore.isAuthenticated">
+              <Btn color="primary" icon="mdi-login" @click="router.push({ name: RouteName.SignIn })">
+                Đăng nhập
+              </Btn>
+            </template>
+            <template v-else>
+              <Menu min-width="220px">
+                <template v-slot:activator="{ props }">
+                  <Btn variant="text" rounded v-bind="props">
+                    <Avatar icon="mdi-account" color="primary" />
+                  </Btn>
+                </template>
+                
+                <Card class="p-4 mt-2 border border-white/10" variant="flat">
+                  <div class="flex flex-col items-center">
+                    <Avatar icon="mdi-account" color="primary" class="mb-2" :size="48" />
+                    <h3 class="text-white font-bold text-center">{{ authStore.user?.name || 'Người dùng' }}</h3>
+                    <p class="text-gray-400 text-xs mt-0.5">{{ authStore.user?.email }}</p>
+                    
+                    <Divider class="my-4" />
+                    
+                    <div class="w-full space-y-1">
+                      <Btn
+                        variant="text"
+                        block
+                        icon="mdi-view-dashboard-outline"
+                        class="!justify-start text-gray-300 hover:!text-white"
+                        @click="router.push({ name: RouteName.Dashboard })"
+                      >
+                        Dashboard
+                      </Btn>
+                      
+                      <Btn
+                        variant="text"
+                        block
+                        icon="mdi-logout"
+                        class="!justify-start text-red-400 hover:!text-red-300"
+                        @click="handleLogout"
+                      >
+                        Đăng xuất
+                      </Btn>
+                    </div>
+                  </div>
+                </Card>
+              </Menu>
+            </template>
           </div>
-          
         </div>
       </div>
     </header>
