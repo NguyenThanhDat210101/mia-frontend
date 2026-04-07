@@ -8,5 +8,6 @@ export interface Plan {
   isPopular: boolean;
   buttonColor: string;
   buttonVariant: 'outlined' | 'elevated' | 'flat' | 'text' | 'plain' | 'tonal';
+  isFree?: boolean;
   discount?: string;
 }

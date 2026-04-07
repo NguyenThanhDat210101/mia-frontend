@@ -51,10 +51,10 @@ const goToSignin = () => router.push('/signin');
     <!-- Abstract blurred shapes -->
     <div class="absolute bottom-[10%] left-[10%] w-[30%] h-[40%] bg-pink-500/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-    <Card class="w-full max-w-md p-8 md:p-10 border border-white/5 bg-gray-900/80 backdrop-blur-xl shadow-2xl relative z-10" border>
+    <Card class="w-full max-w-md p-8 md:p-10 border border-slate-200 dark:border-white/5 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl relative z-10" border>
       <div class="text-center mb-6">
-        <h2 class="text-2xl font-black text-white">Bắt đầu dùng thử</h2>
-        <Span size="sm" class="text-gray-400 mt-2">Tạo tài khoản Store Manager miễn phí</Span>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white">Bắt đầu dùng thử</h2>
+        <Span size="sm" class="text-slate-500 dark:text-gray-400 mt-2">Tạo tài khoản Store Manager miễn phí</Span>
       </div>
 
       <div v-if="error" class="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-xs text-center border-solid">
@@ -125,15 +125,15 @@ const goToSignin = () => router.push('/signin');
       <div class="mt-8">
         <div class="relative">
           <div class="absolute inset-0 flex items-center">
-            <Divider class="border-gray-700" />
+            <Divider class="border-slate-200 dark:border-gray-700" />
           </div>
           <div class="relative flex justify-center text-sm">
-            <Span class="px-2 bg-gray-900 text-gray-400">Đã có tài khoản?</Span>
+            <Span class="px-2 bg-white dark:bg-gray-900 text-slate-500 dark:text-gray-400">Đã có tài khoản?</Span>
           </div>
         </div>
         
         <div class="mt-6">
-          <Btn variant="outlined" block color="white" rounded="lg" @click="goToSignin">
+          <Btn variant="outlined" block color="secondary" rounded="lg" @click="goToSignin">
             ĐĂNG NHẬP NGAY
           </Btn>
         </div>

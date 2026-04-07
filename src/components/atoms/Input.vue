@@ -22,7 +22,7 @@ defineEmits(['update:modelValue']);
       :required="required" 
       :placeholder="placeholder"
       :class="[
-        'block w-full py-2.5 bg-neutral-800 border border-neutral-700/50 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all shadow-inner',
+        'block w-full py-2.5 bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700/50 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all shadow-inner',
         icon ? 'pl-10 pr-3' : 'px-4',
         error ? 'border-red-500 focus:ring-red-500/50' : '',
         $props.class

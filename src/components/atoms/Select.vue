@@ -19,7 +19,7 @@ defineEmits(['update:modelValue']);
     <select 
       :value="modelValue"
       @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
-      class="block w-full py-2.5 bg-neutral-800 border border-neutral-700/50 rounded-xl text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all shadow-inner cursor-pointer"
+      class="block w-full py-2.5 bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700/50 rounded-xl text-slate-900 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all shadow-inner cursor-pointer"
       :class="[
         leftIcon ? 'pl-10' : 'px-4',
         'pr-10',
@@ -27,7 +27,7 @@ defineEmits(['update:modelValue']);
       ]"
     >
       <option value="" disabled selected>{{ placeholder }}</option>
-      <option v-for="opt in options" :key="opt.value" :value="opt.value" class="bg-neutral-900">
+      <option v-for="opt in options" :key="opt.value" :value="opt.value" class="bg-white dark:bg-neutral-900 text-slate-900 dark:text-white">
         {{ opt.label }}
       </option>
     </select>

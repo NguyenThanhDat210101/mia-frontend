@@ -8,16 +8,16 @@ const cardClasses = computed(() => {
   const isOutlined = props.variant === 'outlined';
   const isFlat = props.variant === 'flat';
   
-  let baseClass = 'bg-gray-900 text-white rounded-3xl overflow-hidden relative';
+  let baseClass = 'bg-white dark:bg-gray-900 text-slate-900 dark:text-white rounded-3xl overflow-hidden relative transition-colors duration-300';
   
   if (isOutlined) {
-    baseClass += ' border border-gray-700 bg-transparent';
+    baseClass += ' border border-slate-200 dark:border-gray-700 bg-transparent';
   } else if (props.border || props.variant === 'flat' && !isOutlined) {
-    baseClass += ' border border-white/10';
+    baseClass += ' border border-slate-200 dark:border-white/10';
   }
 
   if (!isFlat && !isOutlined) {
-    baseClass += ' shadow-2xl shadow-black/50';
+    baseClass += ' shadow-xl shadow-slate-200 dark:shadow-black/50';
   }
 
   return [baseClass];

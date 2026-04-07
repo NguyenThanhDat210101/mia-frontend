@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../modules/auth/store/auth.store'
+import { useThemeStore } from '../stores/theme'
 import { RouteName } from '../../router/types'
 import Icon from '../../components/atoms/Icon.vue'
 import Btn from '../../components/atoms/Btn.vue'
@@ -11,6 +12,7 @@ import Divider from '../../components/atoms/Divider.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const themeStore = useThemeStore()
 
 const handleLogout = async () => {
   await authStore.logout()
@@ -19,25 +21,36 @@ const handleLogout = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-neutral-900 text-white flex flex-col font-sans">
+  <div class="min-h-screen bg-slate-50 dark:bg-neutral-900 text-slate-900 dark:text-white flex flex-col font-sans transition-colors duration-300">
     
     <!-- Navbar Tailwind -->
-    <header class="border-b border-white/5 bg-black/60 backdrop-blur-md sticky top-0 z-50">
+    <header class="border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-black/60 backdrop-blur-md sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           
           <!-- Logo -->
           <div class="flex items-center gap-2 cursor-pointer" @click="router.push('/')">
             <Icon icon="mdi-storefront" color="primary" size="large"></Icon>
-            <span class="font-black text-xl tracking-tight">
+            <span class="font-black text-xl tracking-tight text-slate-900 dark:text-white">
               Store<span class="text-primary">Manager</span>
             </span>
           </div>
 
           <!-- Actions -->
           <div class="flex items-center gap-4">
-            <Btn variant="text" color="white" class="hidden sm:flex text-gray-400" @click="router.push('/pricing')">
+            <Btn variant="text" color="default" class="hidden sm:flex text-slate-600 dark:text-gray-400" @click="router.push('/pricing')">
               Bảng giá
+            </Btn>
+            
+            <!-- Theme Toggle Atom -->
+            <Btn
+              icon
+              variant="text"
+              color="default"
+              class="text-slate-600 dark:text-gray-400"
+              @click="themeStore.toggleTheme"
+            >
+              <Icon :icon="themeStore.isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'" />
             </Btn>
             <!-- User Menu or Login Button -->
             <template v-if="!authStore.isAuthenticated">
@@ -53,11 +66,11 @@ const handleLogout = async () => {
                   </Btn>
                 </template>
                 
-                <Card class="p-4 mt-2 border border-white/10" variant="flat">
+                <Card class="p-4 mt-2 border border-slate-200 dark:border-white/10" variant="flat">
                   <div class="flex flex-col items-center">
                     <Avatar icon="mdi-account" color="primary" class="mb-2" :size="48" />
-                    <h3 class="text-white font-bold text-center">{{ authStore.user?.name || 'Người dùng' }}</h3>
-                    <p class="text-gray-400 text-xs mt-0.5">{{ authStore.user?.email }}</p>
+                    <h3 class="text-slate-900 dark:text-white font-bold text-center">{{ authStore.user?.name || 'Người dùng' }}</h3>
+                    <p class="text-slate-500 dark:text-gray-400 text-xs mt-0.5">{{ authStore.user?.email }}</p>
                     
                     <Divider class="my-4" />
                     
@@ -66,7 +79,7 @@ const handleLogout = async () => {
                         variant="text"
                         block
                         icon="mdi-view-dashboard-outline"
-                        class="!justify-start text-gray-300 hover:!text-white"
+                        class="!justify-start text-slate-700 dark:text-gray-300 hover:!text-primary"
                         @click="router.push({ name: RouteName.Dashboard })"
                       >
                         Dashboard
@@ -76,7 +89,7 @@ const handleLogout = async () => {
                         variant="text"
                         block
                         icon="mdi-logout"
-                        class="!justify-start text-red-400 hover:!text-red-300"
+                        class="!justify-start text-red-500 hover:!text-red-400"
                         @click="handleLogout"
                       >
                         Đăng xuất

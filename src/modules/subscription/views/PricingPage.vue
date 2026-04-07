@@ -9,8 +9,11 @@ import Btn from '../../../components/atoms/Btn.vue';
 import Skeleton from '../../../components/atoms/Skeleton.vue';
 import type { Plan } from '../types';
 
+import apiClient from '../../../core/api/client';
+
 const router = useRouter();
 const isLoading = ref(true);
+const isSubscribing = ref(false);
 
 onMounted(() => {
   setTimeout(() => {
@@ -19,6 +22,22 @@ onMounted(() => {
 });
 
 const plans = ref<Plan[]>([
+  {
+    id: 'free',
+    name: 'Dùng Thử',
+    price: '0đ',
+    duration: '/ tháng',
+    description: 'Trải nghiệm đầy đủ tính năng trong 1 tháng',
+    features: [
+      'Quản lý kho hàng cơ bản',
+      'Đồng bộ đơn hàng tự động',
+      'Hỗ trợ qua email'
+    ],
+    isFree: true,
+    isPopular: false,
+    buttonColor: 'white',
+    buttonVariant: 'outlined',
+  },
   {
     id: 'monthly',
     name: '1 Tháng',
@@ -72,7 +91,30 @@ const plans = ref<Plan[]>([
   }
 ]);
 
-const selectPlan = (plan: Plan) => {
+const selectPlan = async (plan: Plan) => {
+  if (plan.isFree) {
+    if (isSubscribing.value) return;
+    
+    isSubscribing.value = true;
+    try {
+      // Hardcoded store_id: 1 for consistency with other modules
+      await apiClient.post('/v1/plans/subscribe', {
+        store_id: 1,
+        plan_id: plan.id,
+        payment_gateway: 'free'
+      });
+      
+      alert('Kích hoạt gói thành công! Bạn có 1 tháng trải nghiệm miễn phí.');
+      router.push('/store/orders'); // Redirect to orders after success
+    } catch (err: any) {
+      const message = err.response?.data?.message || 'Có lỗi xảy ra khi đăng ký gói miễn phí.';
+      alert(message);
+    } finally {
+      isSubscribing.value = false;
+    }
+    return;
+  }
+
   router.push({
     path: '/payment/momo',
     query: {
@@ -114,7 +156,7 @@ const selectPlan = (plan: Plan) => {
           :class="[
             plan.isPopular 
               ? 'border-blue-500 ring-2 ring-blue-500 scale-100 md:scale-105 z-20 shadow-2xl' 
-              : 'border-white/10 shadow-md md:my-4'
+              : 'border-slate-200 dark:border-white/10 shadow-md md:my-4'
           ]"
           variant="flat"
           border
@@ -129,26 +171,26 @@ const selectPlan = (plan: Plan) => {
 
           <!-- Header -->
           <div class="p-8 pb-4 text-center">
-            <h3 class="text-2xl font-bold mb-2">{{ plan.name }}</h3>
-            <p class="text-gray-400 text-sm mb-6 min-h-[40px] px-4">{{ plan.description }}</p>
+            <h3 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">{{ plan.name }}</h3>
+            <p class="text-slate-500 dark:text-gray-400 text-sm mb-6 min-h-[40px] px-4">{{ plan.description }}</p>
 
             <div class="flex items-end justify-center mb-1">
-              <span class="text-5xl font-black text-white leading-none">{{ plan.price }}</span>
-              <span class="text-base text-gray-400 font-medium ml-1 mb-1">{{ plan.duration }}</span>
+              <span class="text-5xl font-black text-slate-900 dark:text-white leading-none">{{ plan.price }}</span>
+              <span class="text-base text-slate-500 dark:text-gray-400 font-medium ml-1 mb-1">{{ plan.duration }}</span>
             </div>
 
-            <div class="text-green-500 text-sm font-bold h-6 mt-2 flex items-center justify-center gap-1">
+            <div class="text-green-600 dark:text-green-500 text-sm font-bold h-6 mt-2 flex items-center justify-center gap-1">
               <Icon v-if="plan.discount" icon="mdi-tag" size="small"></Icon>
               {{ plan.discount || '' }}
             </div>
           </div>
 
-          <Divider class="mx-8 mb-6 border-white/10"></Divider>
+          <Divider class="mx-8 mb-6 border-slate-200 dark:border-white/10"></Divider>
 
           <!-- Danh sách tính năng -->
           <div class="flex-1 px-8 pb-8">
             <ul class="flex flex-col gap-4">
-              <li v-for="(feature, i) in plan.features" :key="i" class="flex items-start text-gray-200">
+              <li v-for="(feature, i) in plan.features" :key="i" class="flex items-start text-slate-700 dark:text-gray-200">
                 <Icon icon="mdi-check-circle" color="primary" class="mr-3 shrink-0 mt-0.5" size="small"></Icon>
                 <span class="leading-relaxed font-medium">{{ feature }}</span>
               </li>
@@ -159,14 +201,16 @@ const selectPlan = (plan: Plan) => {
           <div class="p-8 pt-0">
              <Btn
               block
-              :color="plan.buttonColor"
+              :color="plan.isPopular ? 'primary' : 'default'"
               :variant="plan.buttonVariant"
+              :loading="plan.isFree && isSubscribing"
               size="x-large"
               rounded="xl"
-              class="font-black tracking-wider hover:opacity-90 active:scale-95 transition-all"
+              class="font-black tracking-wider hover:opacity-90 active:scale-95 transition-all text-uppercase"
+              :class="!plan.isPopular && 'border-slate-200 dark:border-white/20 text-slate-700 dark:text-white'"
               @click="selectPlan(plan)"
             >
-              CHỌN GÓI NÀY
+              {{ plan.isFree ? 'BẮT ĐẦU MIỄN PHÍ' : 'CHỌN GÓI NÀY' }}
             </Btn>
           </div>
         </Card>

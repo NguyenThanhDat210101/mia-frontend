@@ -21,24 +21,23 @@ const btnClasses = computed(() => {
 
   const colorMap: Record<string, { bg: string, text: string, border: string, bgHover: string, textHover: string }> = {
     primary: { bg: 'bg-blue-600', text: 'text-white', border: 'border-blue-600', bgHover: 'hover:bg-blue-700', textHover: 'text-blue-500' },
-    secondary: { bg: 'bg-gray-700', text: 'text-white', border: 'border-gray-500', bgHover: 'hover:bg-gray-600', textHover: 'text-gray-300' },
-    white: { bg: 'bg-white', text: 'text-gray-900', border: 'border-white', bgHover: 'hover:bg-gray-100', textHover: 'text-white' },
+    secondary: { bg: 'bg-slate-200 dark:bg-gray-700', text: 'text-slate-900 dark:text-white', border: 'border-slate-300 dark:border-gray-500', bgHover: 'hover:bg-slate-300 dark:hover:bg-gray-600', textHover: 'text-slate-600 dark:text-gray-300' },
+    white: { bg: 'bg-white dark:bg-white/10', text: 'text-slate-900 dark:text-white', border: 'border-slate-200 dark:border-white/20', bgHover: 'hover:bg-slate-100 dark:hover:bg-white/20', textHover: 'text-slate-700 dark:text-white' },
     success: { bg: 'bg-green-600', text: 'text-white', border: 'border-green-600', bgHover: 'hover:bg-green-700', textHover: 'text-green-500' },
+    default: { bg: 'bg-slate-100 dark:bg-white/5', text: 'text-slate-700 dark:text-white', border: 'border-slate-200 dark:border-white/10', bgHover: 'hover:bg-slate-200 dark:hover:bg-white/10', textHover: 'text-slate-600 dark:text-gray-300' },
   };
 
-  const scheme = colorMap[props.color || 'primary'] || { 
-    bg: `bg-${props.color}-600`, text: 'text-white', border: `border-${props.color}-600`, bgHover: `hover:bg-${props.color}-700`, textHover: `text-${props.color}-500` 
-  };
+  const scheme = colorMap[props.color || 'primary'] || colorMap.default;
 
   if (isOutlined) {
     bgClass = 'bg-transparent';
     textClass = scheme.textHover;
     borderClass = `border-2 ${scheme.border}`;
-    hoverClass = `hover:bg-gray-800/50`;
+    hoverClass = `hover:bg-slate-100 dark:hover:bg-gray-800/50`;
   } else if (isText) {
     bgClass = 'bg-transparent';
-    textClass = props.color === 'white' ? 'text-white' : scheme.textHover;
-    hoverClass = 'hover:bg-white/10';
+    textClass = scheme.text;
+    hoverClass = 'hover:bg-slate-100 dark:hover:bg-white/10';
   } else {
     bgClass = scheme.bg;
     textClass = scheme.text;

@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useProductStore } from "../store/product.store";
 import { useOrderStore } from "../store/order.store";
+import { useThemeStore } from "../../../core/stores/theme";
 import Card from "../../../components/atoms/Card.vue";
 import Btn from "../../../components/atoms/Btn.vue";
 import Icon from "../../../components/atoms/Icon.vue";
@@ -10,6 +11,7 @@ import type { Product, OrderItem, Category, CreateOrderRequest } from "../types"
 
 const productStore = useProductStore();
 const orderStore = useOrderStore();
+const themeStore = useThemeStore();
 
 onMounted(() => {
   productStore.fetchProducts();
@@ -118,22 +120,22 @@ const confirmPayment = () => {
 </script>
 
 <template>
-  <div class="h-screen flex overflow-hidden bg-neutral-900 text-white relative">
+  <div class="h-screen flex overflow-hidden bg-slate-50 dark:bg-neutral-900 text-slate-900 dark:text-white relative transition-colors duration-300">
     <!-- Payment Modal Overlay -->
     <div
       v-if="showPaymentModal"
-      class="absolute inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md"
+      class="absolute inset-0 z-[100] flex items-center justify-center p-6 bg-black/50 dark:bg-black/80 backdrop-blur-md"
     >
       <Card
         border
-        class="w-full max-w-md p-8 text-center bg-gray-900 shadow-3xl animate-in zoom-in duration-300"
+        class="w-full max-w-md p-8 text-center bg-white dark:bg-gray-900 shadow-3xl animate-in zoom-in duration-300"
       >
         <div v-if="isProcessing" class="py-12 flex flex-col items-center gap-6">
           <div
-            class="w-20 h-20 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin"
+            class="w-20 h-20 border-4 border-primary/20 border-t-primary rounded-full animate-spin"
           ></div>
-          <h2 class="text-2xl font-black">Đang kết nối cổng Stripe...</h2>
-          <p class="text-gray-400">Vui lòng không đóng trình duyệt</p>
+          <h2 class="text-2xl font-black text-slate-900 dark:text-white">Đang kết nối cổng Stripe...</h2>
+          <p class="text-slate-500 dark:text-gray-400">Vui lòng không đóng trình duyệt</p>
         </div>
 
         <div
@@ -155,13 +157,13 @@ const confirmPayment = () => {
             />
           </div>
           <div class="text-center">
-            <p class="text-gray-300 font-medium">
+            <p class="text-slate-700 dark:text-gray-300 font-medium">
               Tổng tiền:
               <span class="text-2xl font-black text-pink-500"
                 >{{ totalAmount.toLocaleString() }}đ</span
               >
             </p>
-            <p class="text-sm text-gray-500 mt-2">
+            <p class="text-sm text-slate-500 dark:text-gray-500 mt-2">
               Dùng ứng dụng MoMo để quét mã
             </p>
           </div>
@@ -184,8 +186,8 @@ const confirmPayment = () => {
           >
             <Icon icon="mdi-check-circle" color="white" size="large"></Icon>
           </div>
-          <h2 class="text-2xl font-black">Thanh toán Stripe thành công!</h2>
-          <p class="text-gray-400">
+          <h2 class="text-2xl font-black text-slate-900 dark:text-white">Thanh toán Stripe thành công!</h2>
+          <p class="text-slate-500 dark:text-gray-400">
             Giao dịch của bạn đã được xác nhận qua thẻ.
           </p>
           <Btn
@@ -200,11 +202,11 @@ const confirmPayment = () => {
       </Card>
     </div>
     <!-- Left Sidebar: Menu -->
-    <div class="flex-1 flex flex-col h-full border-r border-white/5">
+    <div class="flex-1 flex flex-col h-full border-r border-slate-200 dark:border-white/5">
       <!-- Search & Category -->
       <div class="p-6 space-y-6">
         <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-black">Coffee Menu</h1>
+          <h1 class="text-2xl font-black text-slate-900 dark:text-white">Coffee Menu</h1>
           <div class="w-64">
             <Input
               v-model="searchQuery"
@@ -221,9 +223,10 @@ const confirmPayment = () => {
             v-for="cat in categories"
             :key="cat"
             :variant="activeCategory === cat ? 'elevated' : 'tonal'"
-            :color="activeCategory === cat ? 'primary' : 'white'"
+            :color="activeCategory === cat ? 'primary' : 'default'"
             size="small"
             rounded="lg"
+            class="dark:text-white"
             @click="activeCategory = cat"
           >
             {{ cat }}
@@ -239,11 +242,11 @@ const confirmPayment = () => {
             :key="product.id"
             variant="flat"
             border
-            class="group cursor-pointer hover:border-primary/50 transition-all p-3 flex flex-col items-center text-center bg-neutral-800/40"
+            class="group cursor-pointer hover:border-primary/50 transition-all p-3 flex flex-col items-center text-center bg-white dark:bg-neutral-800/40 border-slate-200 dark:border-white/10"
             @click="addToCart(product)"
           >
             <div
-              class="w-full aspect-square bg-neutral-700/50 rounded-2xl mb-3 flex items-center justify-center text-4xl group-hover:scale-105 transition-transform"
+              class="w-full aspect-square bg-slate-100 dark:bg-neutral-700/50 rounded-2xl mb-3 flex items-center justify-center text-4xl group-hover:scale-105 transition-transform"
             >
               <Icon
                 :icon="
@@ -258,7 +261,7 @@ const confirmPayment = () => {
                 color="primary"
               ></Icon>
             </div>
-            <h3 class="font-bold text-sm mb-1 line-clamp-1">
+            <h3 class="font-bold text-sm mb-1 line-clamp-1 text-slate-900 dark:text-white">
               {{ product.name }}
             </h3>
             <p class="text-primary font-black text-base">
@@ -271,17 +274,18 @@ const confirmPayment = () => {
 
     <!-- Right Sidebar: Cart -->
     <div
-      class="w-[400px] bg-black/40 backdrop-blur-xl flex flex-col h-full border-l border-white/5 shadow-2xl"
+      class="w-[400px] bg-white dark:bg-black/40 backdrop-blur-xl flex flex-col h-full border-l border-slate-200 dark:border-white/5 shadow-2xl transition-colors duration-300"
     >
       <div
-        class="p-6 border-b border-white/5 flex items-center justify-between"
+        class="p-6 border-b border-slate-200 dark:border-white/5 flex items-center justify-between"
       >
-        <h2 class="text-xl font-black">Giỏ hàng ({{ cart.length }})</h2>
+        <h2 class="text-xl font-black text-slate-900 dark:text-white">Giỏ hàng ({{ cart.length }})</h2>
         <Btn
           variant="text"
           size="small"
-          color="white"
+          color="default"
           icon="mdi-delete-outline"
+          class="text-slate-500 dark:text-white"
           @click="cart = []"
           >XÓA</Btn
         >
@@ -290,7 +294,7 @@ const confirmPayment = () => {
       <div class="flex-1 overflow-y-auto p-6 space-y-4">
         <div
           v-if="cart.length === 0"
-          class="h-full flex flex-col items-center justify-center text-gray-500 opacity-50 space-y-4"
+          class="h-full flex flex-col items-center justify-center text-slate-400 dark:text-gray-500 opacity-50 space-y-4"
         >
           <Icon icon="mdi-cart-outline" size="text-8xl"></Icon>
           <p class="font-medium">Chưa có món nào được chọn</p>
@@ -299,37 +303,37 @@ const confirmPayment = () => {
         <div
           v-for="item in cart"
           :key="item.id"
-          class="flex items-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/5 group"
+          class="flex items-center gap-3 bg-slate-50 dark:bg-white/5 p-3 rounded-2xl border border-slate-100 dark:border-white/5 group"
         >
           <div
-            class="w-12 h-12 bg-neutral-800 rounded-xl flex items-center justify-center font-black text-blue-400"
+            class="w-12 h-12 bg-slate-200 dark:bg-neutral-800 rounded-xl flex items-center justify-center font-black text-primary dark:text-blue-400"
           >
             {{ item.quantity }}
           </div>
           <div class="flex-1">
-            <div class="font-bold text-sm leading-tight mb-1">
+            <div class="font-bold text-sm leading-tight mb-1 text-slate-900 dark:text-white">
               {{ item.name }}
             </div>
-            <div class="text-xs text-gray-400 font-medium">
+            <div class="text-xs text-slate-500 dark:text-gray-400 font-medium">
               Size: {{ item.size }} • {{ item.price.toLocaleString() }}đ
             </div>
           </div>
           <div class="flex flex-col items-end gap-2">
-            <div class="font-black text-sm text-blue-400">
+            <div class="font-black text-sm text-primary dark:text-blue-400">
               {{ item.subtotal.toLocaleString() }}đ
             </div>
             <div
-              class="flex items-center bg-black/40 rounded-lg p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+              class="flex items-center bg-slate-200 dark:bg-black/40 rounded-lg p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <button
                 @click="updateQuantity(item.id!, -1)"
-                class="p-1 hover:text-red-400"
+                class="p-1 text-slate-600 dark:text-white hover:text-red-500"
               >
                 <Icon icon="mdi-minus" size="small"></Icon>
               </button>
               <button
                 @click="updateQuantity(item.id!, 1)"
-                class="p-1 hover:text-green-400"
+                class="p-1 text-slate-600 dark:text-white hover:text-green-500"
               >
                 <Icon icon="mdi-plus" size="small"></Icon>
               </button>
@@ -339,9 +343,9 @@ const confirmPayment = () => {
       </div>
 
       <!-- Payment Method Selection -->
-      <div class="px-6 py-4 border-t border-white/5 bg-neutral-900/40">
+      <div class="px-6 py-4 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-neutral-900/40">
         <h3
-          class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4"
+          class="text-xs font-bold text-slate-400 dark:text-gray-500 uppercase tracking-widest mb-4"
         >
           Phương thức thanh toán
         </h3>
@@ -351,14 +355,15 @@ const confirmPayment = () => {
             class="flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all"
             :class="
               selectedPaymentMethod === 'cash'
-                ? 'bg-blue-500/10 border-blue-500 text-blue-400'
-                : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                ? 'bg-primary/10 border-primary text-primary'
+                : 'bg-white dark:bg-white/5 border-slate-200 dark:border-white/5 text-slate-400 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/10'
             "
           >
             <Icon
               icon="mdi-cash"
-              :color="selectedPaymentMethod === 'cash' ? 'primary' : 'white'"
+              :color="selectedPaymentMethod === 'cash' ? 'primary' : 'default'"
               size="default"
+              class="dark:text-white"
             ></Icon>
             <span class="text-[10px] font-bold">TIỀN MẶT</span>
           </button>
@@ -367,14 +372,15 @@ const confirmPayment = () => {
             class="flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all"
             :class="
               selectedPaymentMethod === 'momo'
-                ? 'bg-pink-500/10 border-pink-500 text-pink-400'
-                : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                ? 'bg-pink-500/10 border-pink-500 text-pink-500'
+                : 'bg-white dark:bg-white/5 border-slate-200 dark:border-white/5 text-slate-400 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/10'
             "
           >
             <Icon
               icon="mdi-wallet"
-              :color="selectedPaymentMethod === 'momo' ? 'pink' : 'white'"
+              :color="selectedPaymentMethod === 'momo' ? 'pink' : 'default'"
               size="default"
+              class="dark:text-white"
             ></Icon>
             <span class="text-[10px] font-bold">MOMO</span>
           </button>
@@ -383,14 +389,15 @@ const confirmPayment = () => {
             class="flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all"
             :class="
               selectedPaymentMethod === 'stripe'
-                ? 'bg-indigo-500/10 border-indigo-500 text-indigo-400'
-                : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10'
+                ? 'bg-indigo-500/10 border-indigo-500 text-indigo-500'
+                : 'bg-white dark:bg-white/5 border-slate-200 dark:border-white/5 text-slate-400 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/10'
             "
           >
             <Icon
               icon="mdi-credit-card"
-              :color="selectedPaymentMethod === 'stripe' ? 'indigo' : 'white'"
+              :color="selectedPaymentMethod === 'stripe' ? 'indigo' : 'default'"
               size="default"
+              class="dark:text-white"
             ></Icon>
             <span class="text-[10px] font-bold">CARD</span>
           </button>
@@ -398,16 +405,16 @@ const confirmPayment = () => {
       </div>
 
       <!-- Checkout -->
-      <div class="p-6 bg-black/60 border-t border-white/5 space-y-4">
+      <div class="p-6 bg-slate-100 dark:bg-black/60 border-t border-slate-200 dark:border-white/5 space-y-4">
         <div
-          class="flex justify-between items-center text-gray-400 font-bold mb-2"
+          class="flex justify-between items-center text-slate-500 dark:text-gray-400 font-bold mb-2"
         >
           <span>Tạm tính</span>
-          <span>{{ totalAmount.toLocaleString() }}đ</span>
+          <span class="text-slate-900 dark:text-white">{{ totalAmount.toLocaleString() }}đ</span>
         </div>
         <div class="flex justify-between items-center mb-6">
-          <span class="text-xl font-black">TỔNG TIỀN</span>
-          <span class="text-3xl font-black text-blue-500"
+          <span class="text-xl font-black text-slate-900 dark:text-white">TỔNG TIỀN</span>
+          <span class="text-3xl font-black text-primary"
             >{{ totalAmount.toLocaleString() }}đ</span
           >
         </div>
@@ -418,7 +425,7 @@ const confirmPayment = () => {
           rounded="xl"
           @click="checkout"
           :disabled="cart.length === 0"
-          class="h-16 text-lg font-black tracking-widest shadow-lg shadow-blue-500/20"
+          class="h-16 text-lg font-black tracking-widest shadow-lg shadow-primary/20"
         >
           THANH TOÁN
         </Btn>

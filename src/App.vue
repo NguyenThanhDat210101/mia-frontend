@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
+import { useThemeStore } from './core/stores/theme';
+import { useTheme } from 'vuetify';
+
+const themeStore = useThemeStore();
+const theme = useTheme();
+
+// Sync Vuetify theme with Pinia store
+watch(() => themeStore.themeName, (val) => {
+  theme.global.name.value = val;
+}, { immediate: true });
 
 onMounted(() => {
   // Global Reverb Connection
@@ -13,7 +23,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <router-view />
+  <v-app :theme="themeStore.isDark ? 'dark' : 'light'">
+    <router-view />
+  </v-app>
 </template>
 
 <style>
