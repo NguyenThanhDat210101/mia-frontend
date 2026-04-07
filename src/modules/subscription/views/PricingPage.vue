@@ -8,16 +8,17 @@ import Divider from '../../../components/atoms/Divider.vue';
 import Btn from '../../../components/atoms/Btn.vue';
 import Skeleton from '../../../components/atoms/Skeleton.vue';
 import type { Plan } from '../types';
-
-import apiClient from '../../../core/api/client';
+import { useSubscriptionStore } from '../store/subscription.store';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const isLoading = ref(true);
+const subscriptionStore = useSubscriptionStore();
+const { plans, loading: isLoading } = storeToRefs(subscriptionStore);
+
 const isSubscribing = ref(false);
 const currentIndex = ref(0);
 
 const maxIndex = computed(() => {
-  // Assuming 3 visible items on desktop
   return Math.max(0, plans.value.length - 3);
 });
 
@@ -33,97 +34,39 @@ const prev = () => {
   }
 };
 
+// Constant for aesthetic descriptions based on slug
+const SLUG_DESCRIPTIONS: Record<string, string> = {
+  'free': 'Trải nghiệm đầy đủ tính năng trong 1 tháng',
+  'monthly': 'Thanh toán linh hoạt từng tháng',
+  'quarterly': 'Chống gián đoạn, tiết kiệm hơn',
+  'yearly': 'Đầu tư dài hạn, tối ưu mọi chi phí'
+};
+
+const getDiscountLabel = (slug: string) => {
+  if (slug === 'quarterly') return 'Tiết kiệm ~10%';
+  if (slug === 'yearly') return 'Tiết kiệm ~20%';
+  return '';
+};
+
 onMounted(() => {
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 1500);
+  subscriptionStore.fetchPlans();
 });
 
-const plans = ref<Plan[]>([
-  {
-    id: 'free',
-    name: 'Dùng Thử',
-    price: '0đ',
-    duration: '/ tháng',
-    description: 'Trải nghiệm đầy đủ tính năng trong 1 tháng',
-    features: [
-      'Quản lý kho hàng cơ bản',
-      'Đồng bộ đơn hàng tự động',
-      'Hỗ trợ qua email'
-    ],
-    isFree: true,
-    isPopular: false,
-    buttonColor: 'white',
-    buttonVariant: 'outlined',
-  },
-  {
-    id: 'monthly',
-    name: '1 Tháng',
-    price: '299K',
-    duration: '/ tháng',
-    description: 'Thanh toán linh hoạt từng tháng',
-    features: [
-      'Quản lý kho hàng cơ bản',
-      'Đồng bộ đơn hàng tự động',
-      'Báo cáo doanh thu',
-      'Hỗ trợ qua email'
-    ],
-    isPopular: false,
-    buttonColor: 'secondary',
-    buttonVariant: 'outlined',
-  },
-  {
-    id: 'quarterly',
-    name: '3 Tháng',
-    price: '799K',
-    duration: '/ 3 tháng',
-    description: 'Chống gián đoạn, tiết kiệm hơn',
-    features: [
-      'Tất cả tính năng gói 1 tháng',
-      'Quản lý nhiều chi nhánh (Tối đa 3)',
-      'Phân quyền nhân viên (Tối đa 10)',
-      'Hỗ trợ trực tuyến giờ hành chính'
-    ],
-    isPopular: true,
-    buttonColor: 'primary',
-    buttonVariant: 'elevated',
-    discount: 'Tiết kiệm ~10%'
-  },
-  {
-    id: 'yearly',
-    name: '1 Năm',
-    price: '2,899K',
-    duration: '/ năm',
-    description: 'Đầu tư dài hạn, tối ưu mọi chi phí',
-    features: [
-      'Tất cả tính năng gói 3 tháng',
-      'Không giới hạn cửa hàng',
-      'Tích hợp API vận chuyển',
-      'Hỗ trợ kỹ thuật 24/7',
-      'Báo cáo đa chiều nâng cao'
-    ],
-    isPopular: false,
-    buttonColor: 'secondary',
-    buttonVariant: 'outlined',
-    discount: 'Tiết kiệm ~20%'
-  }
-]);
-
 const selectPlan = async (plan: Plan) => {
-  if (plan.isFree) {
+  if (plan.is_free) {
     if (isSubscribing.value) return;
     
     isSubscribing.value = true;
     try {
       // Hardcoded store_id: 1 for consistency with other modules
-      await apiClient.post('/v1/plans/subscribe', {
+      await subscriptionStore.subscribePlan({
         store_id: 1,
         plan_id: plan.id,
         payment_gateway: 'free'
       });
       
       alert('Kích hoạt gói thành công! Bạn có 1 tháng trải nghiệm miễn phí.');
-      router.push('/store/orders'); // Redirect to orders after success
+      router.push('/store/orders'); 
     } catch (err: any) {
       const message = err.response?.data?.message || 'Có lỗi xảy ra khi đăng ký gói miễn phí.';
       alert(message);
@@ -141,6 +84,7 @@ const selectPlan = async (plan: Plan) => {
     }
   });
 };
+
 </script>
 
 <template>
@@ -206,7 +150,7 @@ const selectPlan = async (plan: Plan) => {
             <Card
               class="w-full rounded-3xl flex flex-col relative transition-all duration-300"
               :class="[
-                plan.isPopular 
+                plan.is_popular 
                   ? 'border-blue-500 ring-2 ring-blue-500 scale-100 md:scale-105 z-20 shadow-2xl' 
                   : 'border-slate-200 dark:border-white/10 shadow-md md:my-4'
               ]"
@@ -214,7 +158,7 @@ const selectPlan = async (plan: Plan) => {
               border
             >
               <!-- Nhãn dán Phổ Biến -->
-              <div v-if="plan.isPopular" class="absolute -top-5 right-6 z-30">
+              <div v-if="plan.is_popular" class="absolute -top-5 right-6 z-30">
                  <Chip color="primary" variant="elevated" class="font-black tracking-wider shadow-lg" elevation="8" size="large">
                      <Icon icon="mdi-crown" class="mr-1"></Icon>
                      PHỔ BIẾN NHẤT
@@ -224,16 +168,20 @@ const selectPlan = async (plan: Plan) => {
               <!-- Header -->
               <div class="p-8 pb-4 text-center">
                 <h3 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">{{ plan.name }}</h3>
-                <p class="text-slate-500 dark:text-gray-400 text-sm mb-6 min-h-[40px] px-4">{{ plan.description }}</p>
+                <p class="text-slate-500 dark:text-gray-400 text-sm mb-6 min-h-[40px] px-4">{{ SLUG_DESCRIPTIONS[plan.slug] }}</p>
 
                 <div class="flex items-end justify-center mb-1">
-                  <span class="text-5xl font-black text-slate-900 dark:text-white leading-none">{{ plan.price }}</span>
-                  <span class="text-base text-slate-500 dark:text-gray-400 font-medium ml-1 mb-1">{{ plan.duration }}</span>
+                  <span class="text-5xl font-black text-slate-900 dark:text-white leading-none">
+                    {{ plan.price === 0 ? '0đ' : `${Math.floor(plan.price / 1000).toLocaleString()}K` }}
+                  </span>
+                  <span class="text-base text-slate-500 dark:text-gray-400 font-medium ml-1 mb-1">
+                    {{ plan.duration_months === 12 ? '/ năm' : (plan.duration_months === 1 ? '/ tháng' : '/ ' + plan.duration_months + ' tháng') }}
+                  </span>
                 </div>
 
                 <div class="text-green-600 dark:text-green-500 text-sm font-bold h-6 mt-2 flex items-center justify-center gap-1">
-                  <Icon v-if="plan.discount" icon="mdi-tag" size="small"></Icon>
-                  {{ plan.discount || '' }}
+                  <Icon v-if="getDiscountLabel(plan.slug)" icon="mdi-tag" size="small"></Icon>
+                  {{ getDiscountLabel(plan.slug) }}
                 </div>
               </div>
 
@@ -242,7 +190,7 @@ const selectPlan = async (plan: Plan) => {
               <!-- Danh sách tính năng -->
               <div class="flex-1 px-8 pb-8">
                 <ul class="flex flex-col gap-4">
-                  <li v-for="(feature, i) in plan.features" :key="i" class="flex items-start text-slate-700 dark:text-gray-200">
+                  <li v-for="(feature, i) in plan.description" :key="i" class="flex items-start text-slate-700 dark:text-gray-200">
                     <Icon icon="mdi-check-circle" color="primary" class="mr-3 shrink-0 mt-0.5" size="small"></Icon>
                     <span class="leading-relaxed font-medium">{{ feature }}</span>
                   </li>
@@ -253,16 +201,16 @@ const selectPlan = async (plan: Plan) => {
               <div class="p-8 pt-0">
                  <Btn
                   block
-                  :color="plan.isPopular ? 'primary' : 'default'"
-                  :variant="plan.buttonVariant"
-                  :loading="plan.isFree && isSubscribing"
+                  :color="plan.is_popular ? 'primary' : (plan.is_free ? 'white' : 'secondary')"
+                  :variant="plan.is_popular ? 'elevated' : 'outlined'"
+                  :loading="plan.is_free && isSubscribing"
                   size="x-large"
                   rounded="xl"
                   class="font-black tracking-wider hover:opacity-90 active:scale-95 transition-all text-uppercase"
-                  :class="!plan.isPopular && 'border-slate-200 dark:border-white/20 text-slate-700 dark:text-white'"
+                  :class="!plan.is_popular && 'border-slate-200 dark:border-white/20 text-slate-700 dark:text-white'"
                   @click="selectPlan(plan)"
                 >
-                  {{ plan.isFree ? 'BẮT ĐẦU MIỄN PHÍ' : 'CHỌN GÓI NÀY' }}
+                  {{ plan.is_free ? 'BẮT ĐẦU MIỄN PHÍ' : 'CHỌN GÓI NÀY' }}
                 </Btn>
               </div>
             </Card>

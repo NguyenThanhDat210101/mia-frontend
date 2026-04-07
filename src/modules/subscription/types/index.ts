@@ -1,13 +1,13 @@
 export interface Plan {
-  id: string;
+  id: number;
   name: string;
-  price: string;
-  duration: string;
-  description: string;
-  features: string[];
-  isPopular: boolean;
-  buttonColor: string;
-  buttonVariant: 'outlined' | 'elevated' | 'flat' | 'text' | 'plain' | 'tonal';
-  isFree?: boolean;
-  discount?: string;
+  slug: string;
+  duration_months: number;
+  price: number;
+  is_free: boolean;
+  is_popular: boolean;
+  description: string[]; // This stores the features list from backend
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
