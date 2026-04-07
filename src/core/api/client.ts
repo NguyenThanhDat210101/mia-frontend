@@ -36,17 +36,17 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true
       
       try {
-        // Tự động gọi refresh (cookie refresh_token sẽ được gửi kèm)
+        // Tự động gọi refresh (cookie refresh_token sẽ được trình duyệt tự gửi kèm)
         const response = await axios.post(`${apiClient.defaults.baseURL}/auth/refresh`, {}, { withCredentials: true })
-        const newToken = response.data.data.access_token
         
-        setAccessToken(newToken)
-        originalRequest.headers.Authorization = `Bearer ${newToken}`
+        const { access_token } = response.data.data
+        
+        setAccessToken(access_token)
+        originalRequest.headers.Authorization = `Bearer ${access_token}`
         
         return apiClient(originalRequest)
       } catch (refreshError) {
         setAccessToken(null)
-        // window.location.href = '/login'
         return Promise.reject(refreshError)
       }
     }

@@ -8,4 +8,9 @@ export default defineConfig({
     vue(),
     vuetify({ autoImport: true }),
   ],
+  server: {
+    host: 'mia-spa.local',
+    port: 5173,
+    strictPort: true,
+  }
 })

@@ -14,14 +14,16 @@ export const useAuthStore = defineStore('auth', () => {
     if (isInitialized.value) return
     
     try {
-      // Thử lấy access_token mới từ refresh_token trong cookie
+      // Thử lấy access_token mới từ refresh_token trong cookie (trình duyệt tự gửi)
       const response = await apiClient.post<LoginResponse>('/auth/refresh')
-      const { access_token } = response.data.data
+      const { access_token, user: userData } = response.data.data
       
+      user.value = userData
       token.value = access_token
       setAccessToken(access_token)
     } catch (error) {
       // Không có session hợp lệ hoặc refresh_token hết hạn
+      user.value = null
       token.value = null
       setAccessToken(null)
     } finally {
@@ -32,8 +34,9 @@ export const useAuthStore = defineStore('auth', () => {
   async function login(credentials: LoginCredentials) {
     try {
       const response = await apiClient.post<LoginResponse>('/auth/login', credentials)
-      const { access_token } = response.data.data
+      const { access_token, user: userData } = response.data.data
       
+      user.value = userData
       token.value = access_token
       setAccessToken(access_token)
       
@@ -46,8 +49,9 @@ export const useAuthStore = defineStore('auth', () => {
   async function register(credentials: RegisterCredentials) {
     try {
       const response = await apiClient.post<RegisterResponse>('/auth/register', credentials)
-      const { access_token } = response.data.data
+      const { access_token, user: userData } = response.data.data
       
+      user.value = userData
       token.value = access_token
       setAccessToken(access_token)
       
