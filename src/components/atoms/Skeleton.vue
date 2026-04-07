@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<SkeletonProps>(), {
 });
 
 const skeletonClasses = computed(() => {
-  const baseClasses = 'bg-gray-700/50 animate-pulse overflow-hidden relative';
+  const baseClasses = 'bg-slate-200 dark:bg-gray-700/50 animate-pulse overflow-hidden relative';
   let typeClasses = '';
   let roundedClasses = '';
 
@@ -61,21 +61,21 @@ const style = computed(() => {
 <template>
   <div v-if="type !== 'card'" :class="skeletonClasses" :style="style">
     <!-- Shimmer overlay -->
-    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 dark:via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
   </div>
 
   <!-- Card preset for convenience -->
-  <div v-else class="bg-gray-900 border border-white/5 rounded-3xl p-8 flex flex-col gap-4 animate-pulse relative overflow-hidden h-full">
+  <div v-else class="bg-white dark:bg-gray-900 border border-slate-200 dark:border-white/5 rounded-3xl p-8 flex flex-col gap-4 animate-pulse relative overflow-hidden h-full shadow-sm dark:shadow-none">
      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 bg-gray-700 rounded-full"></div>
+        <div class="w-12 h-12 bg-slate-200 dark:bg-gray-700 rounded-full"></div>
         <div class="flex-1 flex flex-col gap-2">
-           <div class="w-1/2 h-4 bg-gray-700 rounded-md"></div>
-           <div class="w-1/3 h-3 bg-gray-700/50 rounded-md"></div>
+           <div class="w-1/2 h-4 bg-slate-200 dark:bg-gray-700 rounded-md"></div>
+           <div class="w-1/3 h-3 bg-slate-100 dark:bg-gray-700/50 rounded-md"></div>
         </div>
      </div>
-     <div class="w-full h-24 bg-gray-700/30 rounded-xl mt-4"></div>
-     <div class="w-full h-10 bg-gray-700 rounded-xl mt-auto"></div>
-     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+     <div class="w-full h-24 bg-slate-100 dark:bg-gray-700/30 rounded-xl mt-4"></div>
+     <div class="w-full h-10 bg-slate-200 dark:bg-gray-700 rounded-xl mt-auto"></div>
+     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 dark:via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
   </div>
 </template>
 
