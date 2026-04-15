@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<BtnProps>(), {
   size: 'default',
 });
 
-const emit = defineEmits(['click']);
+const emit = defineEmits([]);
 
 const btnClasses = computed(() => {
   const isOutlined = props.variant === 'outlined';
@@ -78,7 +78,7 @@ const slotsUsed = () => {
 </script>
 
 <template>
-  <button :class="btnClasses" v-bind="$attrs" @click="$emit('click')">
+  <button :class="btnClasses" v-bind="$attrs">
     <Icon v-if="typeof icon === 'string' && !slotsUsed()" :icon="icon" :size="size === 'x-large' ? 'large' : 'default'" class="shrink-0" />
     <span v-if="typeof icon === 'string' && slotsUsed()" class="mr-2">
       <Icon :icon="icon" :size="size === 'x-large' ? 'large' : 'default'" />

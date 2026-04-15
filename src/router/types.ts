@@ -10,5 +10,7 @@ export enum RouteName {
   StoreProducts = 'StoreProducts',
   StoreOrder = 'StoreOrder',
   Pricing = 'Pricing',
-  MomoPayment = 'MomoPayment',
-}
+   MomoPayment = 'MomoPayment',
+   ReportDetail = 'ReportDetail',
+   SetupShifts = 'SetupShifts',
+ }

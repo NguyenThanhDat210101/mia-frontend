@@ -101,3 +101,11 @@ export interface MenuProps {
   rounded?: boolean | string;
   offset?: number | string;
 }
+
+export interface SwitchProps {
+  modelValue: boolean;
+  label?: string;
+  color?: string;
+  disabled?: boolean;
+  hideDetails?: boolean;
+}

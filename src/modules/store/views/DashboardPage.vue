@@ -87,10 +87,10 @@ onMounted(() => {
            <div class="text-xs text-slate-500 dark:text-gray-500 mt-1">Coming soon...</div>
         </Card>
 
-        <Card variant="flat" border class="p-6 cursor-pointer hover:border-pink-500/50 transition-all bg-white dark:bg-neutral-800/40 border-slate-200 dark:border-white/10 group opacity-50 shadow-sm dark:shadow-none">
-           <Icon icon="mdi-chart-line" size="large" color="pink-lighten-2" class="mb-4"></Icon>
+        <Card variant="flat" border class="p-6 cursor-pointer hover:border-pink-500/50 transition-all bg-white dark:bg-neutral-800/40 border-slate-200 dark:border-white/10 group shadow-sm dark:shadow-none" @click="router.push('/report')">
+           <Icon icon="mdi-chart-line" size="large" color="pink-lighten-2" class="mb-4 group-hover:scale-110 transition-transform"></Icon>
            <div class="font-bold text-slate-900 dark:text-white">Báo cáo chi tiết</div>
-           <div class="text-xs text-slate-500 dark:text-gray-500 mt-1">Coming soon...</div>
+           <div class="text-xs text-slate-500 dark:text-gray-500 mt-1">Xem doanh thu &amp; phân tích</div>
         </Card>
       </div>
     </div>

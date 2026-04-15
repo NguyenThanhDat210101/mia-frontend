@@ -5,6 +5,11 @@ export interface User {
   role_id: number
   created_at?: string
   updated_at?: string
+  store?: {
+    id: number
+    name: string
+    is_setup_completed: boolean
+  }
 }
 
 export interface AuthResponse {

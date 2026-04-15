@@ -9,15 +9,8 @@ export default defineConfig({
     vuetify({ autoImport: true }),
   ],
   server: {
-    host: '0.0.0.0',
+    host: 'mia-spa.local',
     port: 5173,
     strictPort: true,
-    watch: {
-      usePolling: true,
-    },
-    allowedHosts: ['mia-spa.local'],
-    hmr: {
-      host: 'mia-spa.local',
-    }
   }
 })

@@ -54,6 +54,16 @@ const router = createRouter({
           path: 'payment/momo',
           name: RouteName.MomoPayment,
           component: () => import('../modules/subscription/views/MomoPaymentPage.vue')
+        },
+        {
+          path: 'report',
+          name: RouteName.ReportDetail,
+          component: () => import('../modules/report/views/ReportPage.vue')
+        },
+        {
+          path: 'setup-shifts',
+          name: RouteName.SetupShifts,
+          component: () => import('../modules/shift/views/SetWorkingHoursPage.vue')
         }
       ]
     }
@@ -91,6 +101,12 @@ router.beforeEach(async (to) => {
   if (authStore.isAuthenticated && isAuthPage) {
     // Nếu đã đăng nhập mà cố vào SignIn/SignUp -> Sang Dashboard
     return { name: RouteName.Dashboard }
+  }
+
+  // Luồng Onboarding: Bắt buộc set Shift
+  if (authStore.isSetupRequired && to.name !== RouteName.SetupShifts) {
+    console.warn('Onboarding: Shifts configuration required.')
+    return { name: RouteName.SetupShifts }
   }
 })
 
