@@ -6,10 +6,13 @@ export interface Product {
     name: string;
     description?: string;
     category: Category;
+    category_id?: number;
     price: number;
     image?: string;
     is_active: boolean;
     size?: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface OrderItem {

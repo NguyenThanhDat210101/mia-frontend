@@ -7,21 +7,27 @@ export interface ProfileUpdateRequest {
   address?: string;
   city?: string;
   avatar?: string;
+  password?: string;
 }
 
 export interface StoreUpdateRequest {
   name?: string;
   address?: string;
+  prefecture?: string;
+  city?: string;
+  phone?: string;
+  email?: string;
   description?: string;
-  logo_url?: string;
+  avatar?: string;
+  timezone?: string;
+  opening_hours?: Array<{ day: string; open: string; close: string }>;
 }
 
 export interface PaymentGate {
-  id: string;
-  name: string;
+  gateway: string;
   is_enabled: boolean;
   description?: string;
-  config: Record<string, string>;
+  config: Record<string, unknown>;
 }
 
 export interface PaymentSettingsRequest {

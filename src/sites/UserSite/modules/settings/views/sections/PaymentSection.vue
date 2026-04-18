@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useSettingsStore } from '../../store/settings.store'
 import type { PaymentGate } from '../../types'
 import Btn from '@/components/atoms/Btn.vue'
@@ -13,16 +13,24 @@ import ExpandTransition from '@/components/atoms/ExpandTransition.vue'
 
 const settingsStore = useSettingsStore()
 
-const paymentGates = ref<PaymentGate[]>([
+interface PaymentGateConfig {
+  gateway: string;
+  name: string;
+  is_enabled: boolean;
+  description: string;
+  config: Record<string, string>;
+}
+
+const defaultGates: PaymentGateConfig[] = [
   {
-    id: 'cash',
+    gateway: 'cash',
     name: 'Tiền mặt',
     is_enabled: true,
     description: 'Thanh toán trực tiếp tại quầy',
     config: {}
   },
   {
-    id: 'momo',
+    gateway: 'momo',
     name: 'Momo',
     is_enabled: false,
     description: 'Thanh toán qua ví điện tử Momo (QR Code)',
@@ -33,7 +41,7 @@ const paymentGates = ref<PaymentGate[]>([
     }
   },
   {
-    id: 'stripe',
+    gateway: 'stripe',
     name: 'Stripe',
     is_enabled: false,
     description: 'Thanh toán qua thẻ quốc tế (Visa, Mastercard)',
@@ -42,7 +50,30 @@ const paymentGates = ref<PaymentGate[]>([
       secretKey: ''
     }
   }
-])
+]
+
+const paymentGates = ref<PaymentGateConfig[]>([...defaultGates])
+
+onMounted(async () => {
+  try {
+    await settingsStore.fetchPaymentConfigs()
+    if (settingsStore.paymentConfigs.length > 0) {
+      paymentGates.value = defaultGates.map(defaultGate => {
+        const existing = settingsStore.paymentConfigs.find(p => p.gateway === defaultGate.gateway)
+        if (existing) {
+          return {
+            ...defaultGate,
+            is_enabled: existing.is_enabled,
+            config: existing.config as Record<string, string> || defaultGate.config
+          }
+        }
+        return defaultGate
+      })
+    }
+  } catch (e) {
+    console.error('Failed to load payment configs:', e)
+  }
+})
 
 const successMessage = ref('')
 const errorMessage = ref('')
@@ -51,7 +82,12 @@ const handleSave = async () => {
   successMessage.value = ''
   errorMessage.value = ''
   try {
-    await settingsStore.updatePaymentMethods({ gates: paymentGates.value })
+    const configs = paymentGates.value.map(gate => ({
+      gateway: gate.gateway,
+      is_enabled: gate.is_enabled,
+      config: gate.config
+    }))
+    await settingsStore.updatePaymentMethods({ gates: configs })
     successMessage.value = 'Cập nhật cấu hình thanh toán thành công!'
   } catch (error) {
     errorMessage.value = 'Có lỗi xảy ra khi cập nhật thanh toán.'
@@ -61,14 +97,14 @@ const handleSave = async () => {
 
 <template>
   <div class="space-y-6">
-    <Card  v-for="gate in paymentGates" :key="gate.id" class="p-6 transition-all duration-300" :class="{ 'ring-2 ring-primary/20': gate.is_enabled }">
+    <Card  v-for="gate in paymentGates" :key="gate.gateway" class="p-6 transition-all duration-300" :class="{ 'ring-2 ring-primary/20': gate.is_enabled }">
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center">
             <Icon 
               color="primary" 
               size="large"
-              :icon="gate.id === 'cash' ? 'mdi-cash' : gate.id === 'momo' ? 'mdi-wallet' : 'mdi-credit-card'"
+              :icon="gate.gateway === 'cash' ? 'mdi-cash' : gate.gateway === 'momo' ? 'mdi-wallet' : 'mdi-credit-card'"
             />
           </div>
           <div>

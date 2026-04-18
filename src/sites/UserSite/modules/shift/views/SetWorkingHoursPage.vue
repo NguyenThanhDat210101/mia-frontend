@@ -6,12 +6,15 @@ import { useToast } from '@/composables/useToast'
 import apiClient from '@/core/api/client'
 import { DAY_NAMES } from '@/core/constants'
 
-// Atoms
-import Btn from '@/components/atoms/Btn.vue'
-import Card from '@/components/atoms/Card.vue'
-import Icon from '@/components/atoms/Icon.vue'
-import Label from '@/components/atoms/Label.vue'
-import Switch from '@/components/atoms/Switch.vue'
+interface Shift {
+  id?: number;
+  name?: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+  store_id?: number;
+  is_active?: boolean;
+}
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -20,38 +23,59 @@ const isSubmitting = ref(false)
 const isLoading = ref(true)
 
 const dayNames = DAY_NAMES
+const dayOfWeekMap: Record<number, string> = {
+  1: 'Monday',
+  2: 'Tuesday',
+  3: 'Wednesday',
+  4: 'Thursday',
+  5: 'Friday',
+  6: 'Saturday',
+  7: 'Sunday'
+}
 
-const schedule = ref<any[]>([])
+const schedule = ref<Array<{
+  id?: number;
+  name: string;
+  day_of_week: number;
+  active: boolean;
+  startTime: string;
+  endTime: string;
+}>>([])
 
 async function fetchShifts() {
   try {
-    const response = await apiClient.get('/shifts')
+    const response = await apiClient.get<{ data: Shift[] }>('/v1/shifts')
     const apiShifts = response.data.data
 
     if (apiShifts && apiShifts.length > 0) {
-      schedule.value = apiShifts.map((shift: any) => ({
+      schedule.value = apiShifts.map((shift: Shift) => ({
         id: shift.id,
-        name: dayNames[shift.day_of_week] || `Day ${shift.day_of_week}`,
-        active: shift.day_of_week <= 5, // Default weekdays to active
-        startTime: shift.start_time || (shift.day_of_week <= 5 ? '08:00' : '09:00'),
-        endTime: shift.end_time || (shift.day_of_week <= 5 ? '18:00' : '12:00')
+        name: shift.name || dayOfWeekMap[shift.day_of_week] || `Day ${shift.day_of_week}`,
+        day_of_week: shift.day_of_week,
+        active: shift.day_of_week <= 5,
+        startTime: shift.start_time || '08:00',
+        endTime: shift.end_time || '18:00'
       }))
+    } else {
+      initDefaultSchedule()
     }
   } catch (error) {
     console.error('Failed to fetch shifts:', error)
-    // Fallback to static data if API fails
-    schedule.value = [
-      { id: 1, name: DAY_NAMES[1], active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 2, name: DAY_NAMES[2], active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 3, name: DAY_NAMES[3], active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 4, name: DAY_NAMES[4], active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 5, name: DAY_NAMES[5], active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 6, name: DAY_NAMES[6], active: false, startTime: '09:00', endTime: '12:00' },
-      { id: 7, name: DAY_NAMES[0], active: false, startTime: '09:00', endTime: '12:00' },
-    ]
+    initDefaultSchedule()
   } finally {
     isLoading.value = false
   }
+}
+
+function initDefaultSchedule() {
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  schedule.value = days.map((day, index) => ({
+    name: day,
+    day_of_week: index + 1,
+    active: index < 5,
+    startTime: index < 5 ? '08:00' : '09:00',
+    endTime: index < 5 ? '18:00' : '12:00'
+  }))
 }
 
 onMounted(() => {
@@ -64,7 +88,8 @@ async function handleSave() {
     const activeShifts = schedule.value
       .filter(day => day.active)
       .map(day => ({
-        day_of_week: day.name,
+        name: day.name,
+        day_of_week: day.day_of_week,
         start_time: day.startTime,
         end_time: day.endTime
       }))
@@ -74,7 +99,7 @@ async function handleSave() {
       return
     }
 
-    await apiClient.post('/shifts', { shifts: activeShifts })
+    await apiClient.post('/v1/shifts', { shifts: activeShifts })
     
     if (authStore.user?.store) {
       authStore.user.store.is_setup_completed = true

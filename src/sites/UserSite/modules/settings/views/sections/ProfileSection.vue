@@ -15,13 +15,24 @@ const settingsStore = useSettingsStore()
 const formData = ref({
   name: authStore.user?.name || '',
   email: authStore.user?.email || '',
-  phone: '', // Needs to be fetched from userInfo if available
-  address: '',
-  avatar: ''
+  phone: authStore.user?.userInfo?.phone || '',
+  address: authStore.user?.userInfo?.address || '',
+  avatar: authStore.user?.userInfo?.avatar || ''
 })
 
 const successMessage = ref('')
 const errorMessage = ref('')
+
+onMounted(async () => {
+  try {
+    await settingsStore.fetchProfile()
+    if (settingsStore.profile) {
+      formData.value.name = settingsStore.profile.name || formData.value.name
+    }
+  } catch (e) {
+    console.error('Failed to load profile:', e)
+  }
+})
 
 const handleSave = async () => {
   successMessage.value = ''
