@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
+import { useToast } from '@/composables/useToast'
 import apiClient from '@/core/api/client'
 import { DAY_NAMES } from '@/core/constants'
 
@@ -14,6 +15,7 @@ import Switch from '@/components/atoms/Switch.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toast = useToast()
 const isSubmitting = ref(false)
 const isLoading = ref(true)
 
@@ -68,7 +70,7 @@ async function handleSave() {
       }))
 
     if (activeShifts.length === 0) {
-      alert('Please select at least one working day.')
+      toast.warning('Please select at least one working day.')
       return
     }
 
@@ -81,7 +83,7 @@ async function handleSave() {
     router.push({ name: 'Dashboard' })
   } catch (error) {
     console.error('Failed to save shifts:', error)
-    alert('Failed to save working hours. Please try again.')
+    toast.error('Failed to save working hours. Please try again.')
   } finally {
     isSubmitting.value = false
   }

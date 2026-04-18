@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from '@/composables/useToast';
 import Card from '@/components/atoms/Card.vue';
 import Chip from '@/components/atoms/Chip.vue';
 import Icon from '@/components/atoms/Icon.vue';
@@ -16,6 +17,7 @@ import { RouteName } from '@/router/types';
 const router = useRouter();
 const subscriptionStore = useSubscriptionStore();
 const authStore = useAuthStore();
+const toast = useToast();
 const { plans, loading: isLoading, slugDescriptions } = storeToRefs(subscriptionStore);
 
 const currentPlanSlug = computed(() => authStore.user?.store?.active_plan?.slug);
@@ -61,13 +63,13 @@ const selectPlan = async (plan: Plan) => {
         payment_gateway: 'free'
       });
       
-      alert('Kích hoạt gói thành công! Bạn có 1 tháng trải nghiệm miễn phí.');
+      toast.success('Kích hoạt gói thành công! Bạn có 1 tháng trải nghiệm miễn phí.');
       router.push({ name: RouteName.StoreOrdersManagement }); 
     } catch (err: any) {
       console.log(err);
       
       const message = err.response?.data?.message || 'Có lỗi xảy ra khi đăng ký gói miễn phí.';
-      alert(message);
+      toast.error(message);
     } finally {
       isSubscribing.value = false;
     }

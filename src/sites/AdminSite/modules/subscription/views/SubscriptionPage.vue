@@ -11,9 +11,11 @@ import Switch from "@/components/atoms/Switch.vue";
 import Dialog from "@/components/atoms/Dialog.vue";
 import type { Plan, PlanRequest } from "../types";
 import { useAdminSubscriptionStore } from "../store/admin-subscription.store";
+import { useToast } from "@/composables/useToast";
 import { storeToRefs } from "pinia";
 
 const adminSubscriptionStore = useAdminSubscriptionStore();
+const toast = useToast();
 const { plans, loading: isLoading } = storeToRefs(adminSubscriptionStore);
 
 const deleteDialog = ref(false);
@@ -89,7 +91,7 @@ const savePlan = async () => {
     }
     resetForm();
   } catch (err) {
-    alert("Có lỗi xảy ra khi lưu gói dịch vụ.");
+    toast.error("Có lỗi xảy ra khi lưu gói dịch vụ.");
   }
 };
 
@@ -105,7 +107,7 @@ const deletePlan = async () => {
       deleteDialog.value = false;
       planToDelete.value = null;
     } catch (err) {
-      alert("Có lỗi xảy ra khi xóa gói dịch vụ.");
+      toast.error("Có lỗi xảy ra khi xóa gói dịch vụ.");
     }
   }
 };

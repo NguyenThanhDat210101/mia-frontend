@@ -9,9 +9,11 @@ import Switch from '@/components/atoms/Switch.vue'
 import Skeleton from '@/components/atoms/Skeleton.vue'
 import Divider from '@/components/atoms/Divider.vue'
 import { useAdminStoreStore } from '../store/store.store'
+import { useToast } from '@/composables/useToast'
 import { storeToRefs } from 'pinia'
 
 const storeStore = useAdminStoreStore()
+const toast = useToast()
 const { stores, loading, filters } = storeToRefs(storeStore)
 
 const deleteDialog = ref(false)
@@ -48,7 +50,7 @@ const handleDelete = async () => {
       deleteDialog.value = false
       storeToDelete.value = null
     } catch (error) {
-      alert('Có lỗi xảy ra khi xóa cửa hàng.')
+      toast.error('Có lỗi xảy ra khi xóa cửa hàng.')
     }
   }
 }

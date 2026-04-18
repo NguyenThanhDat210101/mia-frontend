@@ -5,6 +5,7 @@ import { useProductStore } from "../store/product.store";
 import { useOrderStore } from "../store/order.store";
 import type { Product, OrderItem, Category, CreateOrderRequest } from "../types";
 import { useThemeStore } from '@/core/stores/theme';
+import { useToast } from '@/composables/useToast';
 import Card from '@/components/atoms/Card.vue';
 import Btn from '@/components/atoms/Btn.vue';
 import Icon from '@/components/atoms/Icon.vue';
@@ -14,6 +15,7 @@ import Dialog from '@/components/atoms/Dialog.vue';
 const productStore = useProductStore();
 const orderStore = useOrderStore();
 const themeStore = useThemeStore();
+const toast = useToast();
 
 onMounted(() => {
   productStore.fetchProducts();
@@ -86,7 +88,7 @@ const checkout = () => {
 
 const completeOrder = async () => {
   if (!tableNumber.value) {
-    alert("Vui lòng chọn số bàn");
+    toast.warning("Vui lòng chọn số bàn");
     return;
   }
 
@@ -106,7 +108,7 @@ const completeOrder = async () => {
     if (selectedPaymentMethod.value === "cash") {
       await orderStore.createOrder(orderRequest);
       showTableModal.value = false;
-      alert(`Đơn hàng bàn số ${tableNumber.value} đã được tạo thành công!`);
+      toast.success(`Đơn hàng bàn số ${tableNumber.value} đã được tạo thành công!`);
       cart.value = [];
       tableNumber.value = null;
     } else {
@@ -124,7 +126,7 @@ const completeOrder = async () => {
       }
     }
   } catch (err: any) {
-    alert(err.response?.data?.message || "Đã có lỗi xảy ra khi tạo đơn hàng");
+    toast.error(err.response?.data?.message || "Đã có lỗi xảy ra khi tạo đơn hàng");
   } finally {
     if (selectedPaymentMethod.value === "cash") {
       isProcessing.value = false;
@@ -133,7 +135,7 @@ const completeOrder = async () => {
 };
 
 const confirmPayment = () => {
-  alert("Thanh toán thành công!");
+  toast.success("Thanh toán thành công!");
   showPaymentModal.value = false;
   cart.value = [];
   tableNumber.value = null;

@@ -3,6 +3,7 @@ import { onMounted, watch } from 'vue';
 import { useThemeStore } from '@/core/stores/theme';
 import { useTheme } from 'vuetify';
 import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store';
+import { useToast } from '@/composables/useToast';
 import ProgressCircular from '@/components/atoms/ProgressCircular.vue';
 import App from '@/components/atoms/App.vue';
 import Icon from '@/components/atoms/Icon.vue';
@@ -10,6 +11,7 @@ import Icon from '@/components/atoms/Icon.vue';
 const themeStore = useThemeStore();
 const authStore = useAuthStore();
 const theme = useTheme();
+const { toasts } = useToast();
 
 // Sync Vuetify theme with Pinia store
 watch(() => themeStore.themeName, (val) => {
@@ -33,6 +35,23 @@ onMounted(() => {
 
 <template>
   <App :theme="themeStore.isDark ? 'dark' : 'light'">
+    <v-snackbar
+      v-for="toast in toasts"
+      :key="toast.id"
+      :model-value="true"
+      :color="toast.type === 'error' ? 'error' : toast.type === 'success' ? 'success' : toast.type === 'warning' ? 'warning' : 'info'"
+      :timeout="-1"
+      location="top"
+      class="mt-4"
+    >
+      {{ toast.message }}
+      <template v-slot:actions>
+        <v-btn variant="text" @click="toasts.splice(toasts.findIndex(t => t.id === toast.id), 1)">
+          <Icon icon="mdi-close" size="18" />
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <!-- Global Splash Screen -->
     <transition name="fade">
       <div v-if="!authStore.isInitialized" 

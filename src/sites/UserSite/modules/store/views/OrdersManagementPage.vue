@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted } from 'vue'
 import { useOrderStore } from '../store/order.store'
+import { useToast } from '@/composables/useToast'
 import type { Order } from '../types'
 import Card from '@/components/atoms/Card.vue'
 import Btn from '@/components/atoms/Btn.vue'
@@ -11,6 +12,7 @@ import Divider from '@/components/atoms/Divider.vue'
 import Alert from '@/components/atoms/Alert.vue'
 
 const orderStore = useOrderStore()
+const toast = useToast()
 const tableFilter = ref<number | string>('')
 const statusFilter = ref<'all' | 'pending' | 'completed' | 'cancelled'>('pending')
 const refreshInterval = ref<any>(null)
@@ -32,7 +34,7 @@ const handleStatusUpdate = async (orderId: number, status: 'completed' | 'cancel
   try {
     await orderStore.updateOrderStatus(orderId, status)
   } catch (error) {
-    alert('Không thể cập nhật trạng thái đơn hàng')
+    toast.error('Không thể cập nhật trạng thái đơn hàng')
   }
 }
 

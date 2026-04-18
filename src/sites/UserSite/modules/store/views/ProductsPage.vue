@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useProductStore } from '../store/product.store';
+import { useToast } from '@/composables/useToast';
 import Card from '@/components/atoms/Card.vue';
 import Btn from '@/components/atoms/Btn.vue';
 import Icon from '@/components/atoms/Icon.vue';
@@ -13,6 +14,7 @@ import type { Product, Category } from '../types';
 import { storeToRefs } from 'pinia';
 
 const productStore = useProductStore();
+const toast = useToast();
 const { labeledCategories, loading: isLoading } = storeToRefs(productStore);
 
 onMounted(() => {
@@ -37,7 +39,7 @@ const addProduct = async () => {
       });
       newProduct.value = { name: '', category: 'Coffee', price: 0, is_active: true };
     } catch (error) {
-      alert('Lỗi khi thêm sản phẩm');
+      toast.error('Lỗi khi thêm sản phẩm');
     }
   }
 };
