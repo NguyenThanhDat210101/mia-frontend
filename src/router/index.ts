@@ -1,69 +1,102 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../modules/auth/store/auth.store'
-import { RouteName } from './types'
+import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
+import { RouteName } from '@/router/types'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // User Site Routes
     {
       path: '/',
-      component: () => import('../core/layouts/MainLayout.vue'),
+      component: () => import('@/core/layouts/MainLayout.vue'),
       children: [
         {
           path: '',
           name: RouteName.Home,
-          component: () => import('../modules/landing/views/HomePage.vue')
+          component: () => import('@/sites/UserSite/modules/landing/views/HomePage.vue')
         },
         {
           path: 'signin',
           name: RouteName.SignIn,
-          component: () => import('../modules/auth/views/SignInPage.vue')
+          component: () => import('@/sites/UserSite/modules/auth/views/SignInPage.vue')
         },
         {
           path: 'signup',
           name: RouteName.SignUp,
-          component: () => import('../modules/auth/views/SignUpPage.vue')
+          component: () => import('@/sites/UserSite/modules/auth/views/SignUpPage.vue')
         },
         {
           path: 'verify-otp',
           name: RouteName.VerifyOtp,
-          component: () => import('../modules/auth/views/OtpVerifyPage.vue')
+          component: () => import('@/sites/UserSite/modules/auth/views/OtpVerifyPage.vue')
         },
         {
           path: 'dashboard',
           name: RouteName.Dashboard,
-          component: () => import('../modules/store/views/DashboardPage.vue')
+          component: () => import('@/sites/UserSite/modules/store/views/DashboardPage.vue')
         },
         {
           path: 'store/products',
           name: RouteName.StoreProducts,
-          component: () => import('../modules/store/views/ProductsPage.vue')
+          component: () => import('@/sites/UserSite/modules/store/views/ProductsPage.vue')
         },
         {
           path: 'store/order',
           name: RouteName.StoreOrder,
-          component: () => import('../modules/store/views/OrderPage.vue')
+          component: () => import('@/sites/UserSite/modules/store/views/OrderPage.vue')
         },
         {
           path: 'pricing',
           name: RouteName.Pricing,
-          // Route level code-splitting
-          component: () => import('../modules/subscription/views/PricingPage.vue')
+          component: () => import('@/sites/UserSite/modules/subscription/views/PricingPage.vue')
         },
         {
           path: 'payment/momo',
           name: RouteName.MomoPayment,
-          component: () => import('../modules/subscription/views/MomoPaymentPage.vue')
+          component: () => import('@/sites/UserSite/modules/subscription/views/MomoPaymentPage.vue')
         },
         {
           path: 'report',
           name: RouteName.ReportDetail,
-          component: () => import('../modules/report/views/ReportPage.vue')
+          component: () => import('@/sites/UserSite/modules/report/views/ReportPage.vue')
         },
         {
           path: 'setup-shifts',
           name: RouteName.SetupShifts,
-          component: () => import('../modules/shift/views/SetWorkingHoursPage.vue')
+          component: () => import('@/sites/UserSite/modules/shift/views/SetWorkingHoursPage.vue')
+        }
+      ]
+    },
+
+    // Admin Site Routes
+    {
+      path: '/admin',
+      component: () => import('@/sites/AdminSite/layouts/AdminLayout.vue'),
+      children: [
+        {
+          path: '',
+          name: RouteName.AdminDashboard,
+          component: () => import('@/sites/AdminSite/modules/dashboard/views/DashboardPage.vue')
+        },
+        {
+          path: 'stores',
+          name: RouteName.AdminStores,
+          component: () => import('@/sites/AdminSite/modules/store/views/StoreListPage.vue')
+        },
+        {
+          path: 'users',
+          name: RouteName.AdminUsers,
+          component: () => import('@/sites/AdminSite/modules/user/views/UserListPage.vue')
+        },
+        {
+          path: 'subscriptions',
+          name: RouteName.AdminSubscriptions,
+          component: () => import('@/sites/AdminSite/modules/subscription/views/SubscriptionPage.vue')
+        },
+        {
+          path: 'settings',
+          name: RouteName.AdminSettings,
+          component: () => import('@/sites/AdminSite/modules/settings/views/SettingsPage.vue')
         }
       ]
     }
@@ -89,22 +122,32 @@ router.beforeEach(async (to) => {
   
   const isPublic = publicPages.includes(to.name as string)
   const isAuthPage = authPages.includes(to.name as string)
+  const isAdminRoute = to.path.startsWith('/admin')
 
   // Khôi phục session nếu cần (chỉ chạy 1 lần khi load trang)
   await authStore.init()
+
+  // Simple Admin Check (Có thể mở rộng sau)
+  if (isAdminRoute && !authStore.isAuthenticated) {
+    return { name: RouteName.SignIn }
+  }
 
   if (!authStore.isAuthenticated && !isPublic) {
     // Nếu chưa đăng nhập và truy cập trang bảo mật -> Về SignIn
     return { name: RouteName.SignIn }
   }
 
-  if (authStore.isAuthenticated && isAuthPage) {
-    // Nếu đã đăng nhập mà cố vào SignIn/SignUp -> Sang Dashboard
-    return { name: RouteName.Dashboard }
+  if (authStore.isAuthenticated && (isAuthPage || to.name === RouteName.Home)) {
+    // Nếu đã đăng nhập mà cố vào SignIn/SignUp hoặc Home -> Sang Dashboard
+    // Tuy nhiên nếu đang hướng tới Admin thì cứ để đi tiếp
+    if (!isAdminRoute) {
+        const redirectName = authStore.user?.role_id === 1 ? RouteName.AdminDashboard : RouteName.Dashboard
+        return { name: redirectName }
+    }
   }
 
   // Luồng Onboarding: Bắt buộc set Shift
-  if (authStore.isSetupRequired && to.name !== RouteName.SetupShifts) {
+  if (authStore.isSetupRequired && to.name !== RouteName.SetupShifts && !isAdminRoute) {
     console.warn('Onboarding: Shifts configuration required.')
     return { name: RouteName.SetupShifts }
   }

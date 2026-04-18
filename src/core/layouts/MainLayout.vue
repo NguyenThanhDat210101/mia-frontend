@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../modules/auth/store/auth.store'
-import { useThemeStore } from '../stores/theme'
-import { RouteName } from '../../router/types'
-import Icon from '../../components/atoms/Icon.vue'
-import Btn from '../../components/atoms/Btn.vue'
-import Avatar from '../../components/atoms/Avatar.vue'
-import Menu from '../../components/atoms/Menu.vue'
-import Card from '../../components/atoms/Card.vue'
-import Divider from '../../components/atoms/Divider.vue'
+import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
+import { useThemeStore } from '@/core/stores/theme'
+import { RouteName } from '@/router/types'
+import Icon from '@/components/atoms/Icon.vue'
+import Btn from '@/components/atoms/Btn.vue'
+import Avatar from '@/components/atoms/Avatar.vue'
+import Menu from '@/components/atoms/Menu.vue'
+import Card from '@/components/atoms/Card.vue'
+import Divider from '@/components/atoms/Divider.vue'
+import Chip from '@/components/atoms/Chip.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -16,7 +17,7 @@ const themeStore = useThemeStore()
 
 const handleLogout = async () => {
   await authStore.logout()
-  router.push({ name: RouteName.SignIn })
+  router.push('/')
 }
 </script>
 
@@ -72,6 +73,16 @@ const handleLogout = async () => {
                     <h3 class="text-slate-900 dark:text-white font-bold text-center">{{ authStore.user?.name || 'Người dùng' }}</h3>
                     <p class="text-slate-500 dark:text-gray-400 text-xs mt-0.5">{{ authStore.user?.email }}</p>
                     
+                    <div v-if="authStore.user?.store?.active_plan" class="mt-3">
+                      <Chip 
+                        :color="authStore.user.store.active_plan.slug === 'free' ? 'secondary' : 'primary'"
+                        size="small"
+                        variant="tonal"
+                      >
+                        {{ authStore.user.store.active_plan.name }}
+                      </Chip>
+                    </div>
+                    
                     <Divider class="my-4" />
                     
                     <div class="w-full space-y-1">
@@ -80,7 +91,7 @@ const handleLogout = async () => {
                         block
                         icon="mdi-view-dashboard-outline"
                         class="!justify-start text-slate-700 dark:text-gray-300 hover:!text-primary"
-                        @click="router.push({ name: RouteName.Dashboard })"
+                        @click="router.push({ name: authStore.user?.role_id === 1 ? RouteName.AdminDashboard : RouteName.Dashboard })"
                       >
                         Dashboard
                       </Btn>

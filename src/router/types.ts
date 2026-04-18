@@ -13,4 +13,9 @@ export enum RouteName {
    MomoPayment = 'MomoPayment',
    ReportDetail = 'ReportDetail',
    SetupShifts = 'SetupShifts',
- }
+  AdminDashboard = 'AdminDashboard',
+  AdminStores = 'AdminStores',
+  AdminUsers = 'AdminUsers',
+  AdminSubscriptions = 'AdminSubscriptions',
+  AdminSettings = 'AdminSettings',
+}

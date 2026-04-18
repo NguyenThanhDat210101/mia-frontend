@@ -8,7 +8,7 @@ const cardClasses = computed(() => {
   const isOutlined = props.variant === 'outlined';
   const isFlat = props.variant === 'flat';
   
-  let baseClass = 'bg-white dark:bg-gray-900 text-slate-900 dark:text-white rounded-3xl overflow-hidden relative transition-colors duration-300';
+  let baseClass = 'bg-white dark:bg-gray-900 text-slate-900 dark:text-white rounded-3xl relative transition-colors duration-300';
   
   if (isOutlined) {
     baseClass += ' border border-slate-200 dark:border-gray-700 bg-transparent';

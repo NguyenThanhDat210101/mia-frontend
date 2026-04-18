@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "vue-app",
+      "name": "Mia",
       "dependencies": {
         "@mdi/font": "^7.4.47",
         "axios": "^1.14.0",

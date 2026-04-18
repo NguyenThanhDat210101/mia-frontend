@@ -66,8 +66,9 @@ const btnClasses = computed(() => {
   }
   
   const shadowClass = props.variant === 'elevated' ? 'shadow-md' : '';
+  const loadingClass = props.loading ? 'opacity-70 pointer-events-none' : '';
 
-  return [bgClass, textClass, borderClass, hoverClass, sizeClass, blockClass, roundedClass, shadowClass, 'items-center justify-center font-bold tracking-wide transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer'];
+  return [bgClass, textClass, borderClass, hoverClass, sizeClass, blockClass, roundedClass, shadowClass, loadingClass, 'items-center justify-center font-bold tracking-wide transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer text-center relative'];
 });
 
 const slots = useSlots();
@@ -78,11 +79,16 @@ const slotsUsed = () => {
 </script>
 
 <template>
-  <button :class="btnClasses" v-bind="$attrs">
-    <Icon v-if="typeof icon === 'string' && !slotsUsed()" :icon="icon" :size="size === 'x-large' ? 'large' : 'default'" class="shrink-0" />
-    <span v-if="typeof icon === 'string' && slotsUsed()" class="mr-2">
-      <Icon :icon="icon" :size="size === 'x-large' ? 'large' : 'default'" />
-    </span>
+  <button :class="btnClasses" v-bind="$attrs" :disabled="disabled || loading">
+    <template v-if="loading">
+      <Icon icon="mdi-loading" class="animate-spin" :class="{ 'mr-2': slotsUsed() }" />
+    </template>
+    <template v-else>
+      <Icon v-if="typeof icon === 'string' && !slotsUsed()" :icon="icon" :size="size === 'x-large' ? 'large' : 'default'" class="shrink-0" />
+      <span v-if="typeof icon === 'string' && slotsUsed()" class="mr-2">
+        <Icon :icon="icon" :size="size === 'x-large' ? 'large' : 'default'" />
+      </span>
+    </template>
     <slot></slot>
   </button>
 </template>

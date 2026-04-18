@@ -10,6 +10,8 @@ export interface BtnProps {
   block?: boolean;
   rounded?: boolean | string;
   icon?: string | boolean;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 export interface CardProps {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue';
-import { useThemeStore } from './core/stores/theme';
+import { useThemeStore } from '@/core/stores/theme';
 import { useTheme } from 'vuetify';
-import { useAuthStore } from './modules/auth/store/auth.store';
-import ProgressCircular from './components/atoms/ProgressCircular.vue';
+import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store';
+import ProgressCircular from '@/components/atoms/ProgressCircular.vue';
 
 const themeStore = useThemeStore();
 const authStore = useAuthStore();
