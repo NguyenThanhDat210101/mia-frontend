@@ -8,6 +8,14 @@ export const useSettingsStore = defineStore('settings', () => {
   const loading = ref(false)
   const authStore = useAuthStore()
 
+  const tabs = ref([
+    { id: 'profile', title: 'Cá nhân', icon: 'mdi-account-circle' },
+    { id: 'store', title: 'Cửa hàng', icon: 'mdi-storefront' },
+    { id: 'payment', title: 'Thanh toán', icon: 'mdi-credit-card' },
+    { id: 'security', title: 'Bảo mật', icon: 'mdi-shield-lock' },
+    { id: 'preferences', title: 'Tùy chỉnh', icon: 'mdi-tune' }
+  ])
+
   async function updateProfile(data: ProfileUpdateRequest) {
     loading.value = true
     try {
@@ -57,6 +65,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
   return {
     loading,
+    tabs,
     updateProfile,
     updateStore,
     updatePaymentMethods

@@ -14,6 +14,8 @@ export enum RouteName {
    ReportDetail = 'ReportDetail',
    SetupShifts = 'SetupShifts',
    Settings = 'Settings',
+   StoreOrdersManagement = 'StoreOrdersManagement',
+   NotFound = 'NotFound',
   AdminDashboard = 'AdminDashboard',
   AdminStores = 'AdminStores',
   AdminUsers = 'AdminUsers',

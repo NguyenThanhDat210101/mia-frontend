@@ -47,6 +47,11 @@ const router = createRouter({
           component: () => import('@/sites/UserSite/modules/store/views/OrderPage.vue')
         },
         {
+          path: 'store/orders',
+          name: RouteName.StoreOrdersManagement,
+          component: () => import('@/sites/UserSite/modules/store/views/OrdersManagementPage.vue')
+        },
+        {
           path: 'pricing',
           name: RouteName.Pricing,
           component: () => import('@/sites/UserSite/modules/subscription/views/PricingPage.vue')
@@ -105,6 +110,12 @@ const router = createRouter({
           component: () => import('@/sites/AdminSite/modules/settings/views/SettingsPage.vue')
         }
       ]
+    },
+    // 404 Route
+    {
+      path: '/:pathMatch(.*)*',
+      name: RouteName.NotFound,
+      component: () => import('@/core/views/NotFoundPage.vue')
     }
   ]
 })

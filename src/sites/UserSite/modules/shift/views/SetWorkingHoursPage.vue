@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
 import apiClient from '@/core/api/client'
+import { DAY_NAMES } from '@/core/constants'
 
 // Atoms
 import Btn from '@/components/atoms/Btn.vue'
@@ -16,15 +17,7 @@ const authStore = useAuthStore()
 const isSubmitting = ref(false)
 const isLoading = ref(true)
 
-const dayNames: Record<number, string> = {
-  1: 'Monday',
-  2: 'Tuesday',
-  3: 'Wednesday',
-  4: 'Thursday',
-  5: 'Friday',
-  6: 'Saturday',
-  7: 'Sunday'
-}
+const dayNames = DAY_NAMES
 
 const schedule = ref<any[]>([])
 
@@ -46,13 +39,13 @@ async function fetchShifts() {
     console.error('Failed to fetch shifts:', error)
     // Fallback to static data if API fails
     schedule.value = [
-      { id: 1, name: 'Monday', active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 2, name: 'Tuesday', active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 3, name: 'Wednesday', active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 4, name: 'Thursday', active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 5, name: 'Friday', active: true, startTime: '08:00', endTime: '18:00' },
-      { id: 6, name: 'Saturday', active: false, startTime: '09:00', endTime: '12:00' },
-      { id: 7, name: 'Sunday', active: false, startTime: '09:00', endTime: '12:00' },
+      { id: 1, name: DAY_NAMES[1], active: true, startTime: '08:00', endTime: '18:00' },
+      { id: 2, name: DAY_NAMES[2], active: true, startTime: '08:00', endTime: '18:00' },
+      { id: 3, name: DAY_NAMES[3], active: true, startTime: '08:00', endTime: '18:00' },
+      { id: 4, name: DAY_NAMES[4], active: true, startTime: '08:00', endTime: '18:00' },
+      { id: 5, name: DAY_NAMES[5], active: true, startTime: '08:00', endTime: '18:00' },
+      { id: 6, name: DAY_NAMES[6], active: false, startTime: '09:00', endTime: '12:00' },
+      { id: 7, name: DAY_NAMES[0], active: false, startTime: '09:00', endTime: '12:00' },
     ]
   } finally {
     isLoading.value = false

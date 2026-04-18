@@ -6,6 +6,13 @@ import apiClient from '@/core/api/client'
 export const useProductStore = defineStore('product', () => {
   const products = ref<Product[]>([])
   const loading = ref(false)
+  const categories = ref<string[]>(["Tất cả", "Coffee", "Tea", "Juice", "Bakery"])
+  const labeledCategories = ref<{ label: string; value: string }[]>([
+    { label: 'Cà phê', value: 'Coffee' },
+    { label: 'Trà', value: 'Tea' },
+    { label: 'Nước ép', value: 'Juice' },
+    { label: 'Bánh ngọt', value: 'Bakery' },
+  ])
 
   async function fetchProducts() {
     loading.value = true
@@ -33,6 +40,8 @@ export const useProductStore = defineStore('product', () => {
   return {
     products,
     loading,
+    categories,
+    labeledCategories,
     fetchProducts,
     addProduct
   }

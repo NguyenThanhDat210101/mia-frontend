@@ -26,6 +26,7 @@ export interface Order {
     id?: number;
     user_id?: number;
     store_id: number;
+    table_number: number;
     total_amount: number;
     payment_method: 'cash' | 'momo' | 'stripe';
     status: 'pending' | 'completed' | 'cancelled';
@@ -36,6 +37,7 @@ export interface Order {
 
 export interface CreateOrderRequest {
     store_id: number;
+    table_number: number;
     payment_method: string;
     notes?: string;
     items: {

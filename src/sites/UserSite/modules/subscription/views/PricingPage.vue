@@ -11,11 +11,12 @@ import type { Plan } from '../types';
 import { useSubscriptionStore } from '../store/subscription.store';
 import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store';
 import { storeToRefs } from 'pinia';
+import { RouteName } from '@/router/types';
 
 const router = useRouter();
 const subscriptionStore = useSubscriptionStore();
 const authStore = useAuthStore();
-const { plans, loading: isLoading } = storeToRefs(subscriptionStore);
+const { plans, loading: isLoading, slugDescriptions } = storeToRefs(subscriptionStore);
 
 const currentPlanSlug = computed(() => authStore.user?.store?.active_plan?.slug);
 
@@ -38,14 +39,6 @@ const prev = () => {
   }
 };
 
-// Constant for aesthetic descriptions based on slug
-const SLUG_DESCRIPTIONS: Record<string, string> = {
-  'free': 'Trải nghiệm đầy đủ tính năng trong 1 tháng',
-  'monthly': 'Thanh toán linh hoạt từng tháng',
-  'quarterly': 'Chống gián đoạn, tiết kiệm hơn',
-  'yearly': 'Đầu tư dài hạn, tối ưu mọi chi phí'
-};
-
 const getDiscountLabel = (slug: string) => {
   if (slug === 'quarterly') return 'Tiết kiệm ~10%';
   if (slug === 'yearly') return 'Tiết kiệm ~20%';
@@ -64,14 +57,15 @@ const selectPlan = async (plan: Plan) => {
     try {
       // Hardcoded store_id: 1 for consistency with other modules
       await subscriptionStore.subscribePlan({
-        store_id: 1,
         plan_id: plan.id,
         payment_gateway: 'free'
       });
       
       alert('Kích hoạt gói thành công! Bạn có 1 tháng trải nghiệm miễn phí.');
-      router.push('/store/orders'); 
+      router.push({ name: RouteName.StoreOrdersManagement }); 
     } catch (err: any) {
+      console.log(err);
+      
       const message = err.response?.data?.message || 'Có lỗi xảy ra khi đăng ký gói miễn phí.';
       alert(message);
     } finally {
@@ -178,7 +172,7 @@ const selectPlan = async (plan: Plan) => {
               <!-- Header -->
               <div class="p-8 pb-4 text-center">
                 <h3 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">{{ plan.name }}</h3>
-                <p class="text-slate-500 dark:text-gray-400 text-sm mb-6 min-h-[40px] px-4">{{ SLUG_DESCRIPTIONS[plan.slug] }}</p>
+                <p class="text-slate-500 dark:text-gray-400 text-sm mb-6 min-h-[40px] px-4">{{ slugDescriptions[plan.slug] }}</p>
 
                 <div class="flex items-end justify-center mb-1">
                   <span class="text-5xl font-black text-slate-900 dark:text-white leading-none">

@@ -10,18 +10,14 @@ import Label from '@/components/atoms/Label.vue';
 import Chip from '@/components/atoms/Chip.vue';
 import type { Product, Category } from '../types';
 
+import { storeToRefs } from 'pinia';
+
 const productStore = useProductStore();
+const { labeledCategories, loading: isLoading } = storeToRefs(productStore);
 
 onMounted(() => {
   productStore.fetchProducts();
 });
-
-const categories: { label: string; value: Category }[] = [
-  { label: 'Cà phê', value: 'Coffee' },
-  { label: 'Trà', value: 'Tea' },
-  { label: 'Nước ép', value: 'Juice' },
-  { label: 'Bánh ngọt', value: 'Bakery' },
-];
 
 const newProduct = ref<Partial<Product>>({
   name: '',
@@ -72,7 +68,7 @@ const addProduct = async () => {
           </div>
           <div>
             <Label>Danh mục</Label>
-            <Select v-model="newProduct.category" :options="categories" />
+            <Select v-model="newProduct.category" :options="labeledCategories" />
           </div>
           <div>
             <Label>Giá bán (VNĐ)</Label>

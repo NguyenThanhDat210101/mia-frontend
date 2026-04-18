@@ -4,16 +4,13 @@ import Card from '@/components/atoms/Card.vue';
 import Btn from '@/components/atoms/Btn.vue';
 import Icon from '@/components/atoms/Icon.vue';
 
+import { LANDING_FEATURES } from '@/core/constants';
+
 const router = useRouter();
 const goToPricing = () => router.push('/pricing');
 const goToSignup = () => router.push('/signup');
 
-const features = [
-  { icon: 'mdi-layers-triple-outline', title: 'Quản lý đa sàn', desc: 'Đồng bộ tự động Shopee, Lazada, TikTok Shop dễ dàng.' },
-  { icon: 'mdi-lightning-bolt', title: 'Real-time Sync', desc: 'Tốc độ cập nhật tồn kho dưới 1s bằng giao thức Reverb WebSockets.' },
-  { icon: 'mdi-chart-bell-curve-cumulative', title: 'Báo cáo thông minh', desc: 'Phân tích doanh thu và dự báo xu hướng sản phẩm tự động.' },
-  { icon: 'mdi-security', title: 'Bảo mật tuyệt đối', desc: 'Hệ thống hạ tầng Cloud đạt chuẩn, an toàn dữ liệu khách hàng.' }
-];
+const features = LANDING_FEATURES;
 </script>
 
 <template>
@@ -49,7 +46,7 @@ const features = [
             <Icon :icon="feat.icon" size="large" color="primary"></Icon>
           </div>
           <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">{{ feat.title }}</h3>
-          <p class="text-slate-500 dark:text-gray-400 leading-relaxed text-sm font-medium">{{ feat.desc }}</p>
+          <p class="text-slate-500 dark:text-gray-400 leading-relaxed text-sm font-medium">{{ feat.description }}</p>
         </Card>
       </div>
     </div>

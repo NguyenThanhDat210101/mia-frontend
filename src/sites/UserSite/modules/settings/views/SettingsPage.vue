@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '../store/settings.store'
 import ProfileSection from './sections/ProfileSection.vue'
 import StoreSection from './sections/StoreSection.vue'
 import PaymentSection from './sections/PaymentSection.vue'
@@ -7,13 +9,10 @@ import Icon from '@/components/atoms/Icon.vue'
 import Window from '@/components/atoms/Window.vue'
 import WindowItem from '@/components/atoms/WindowItem.vue'
 
-const activeTab = ref(0)
+const settingsStore = useSettingsStore();
+const { tabs } = storeToRefs(settingsStore);
 
-const tabs = [
-  { title: 'Tài khoản', icon: 'mdi-account-outline' },
-  { title: 'Cửa hàng', icon: 'mdi-storefront-outline' },
-  { title: 'Thanh toán', icon: 'mdi-credit-card-outline' }
-]
+const activeTab = ref(0);
 </script>
 
 <template>

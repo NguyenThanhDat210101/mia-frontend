@@ -9,25 +9,20 @@ import Skeleton from '@/components/atoms/Skeleton.vue';
 import InputDate from '@/components/atoms/InputDate.vue';
 import Select from '@/components/atoms/Select.vue';
 import { useReportStore } from '../store/report.store';
+import { useOrderStore } from '../../store/order.store';
+import { storeToRefs } from 'pinia';
 import type { ReportPeriod } from '../types';
 
 const router = useRouter();
 const reportStore = useReportStore();
+const orderStore = useOrderStore();
+const { periodOptions } = storeToRefs(reportStore);
+const { storeOptions: rawStoreOptions } = storeToRefs(orderStore);
 
-// ─── Filter state ──────────────────────────────────────────────────────────
-const storeOptions = [
+const storeOptions = computed(() => [
   { label: 'Tất cả chi nhánh', value: '' },
-  { label: 'Chi nhánh Quận 1', value: 'q1' },
-  { label: 'Chi nhánh Thủ Đức', value: 'td' },
-  { label: 'Kho Tổng Hóc Môn', value: 'hm' },
-];
-
-const periodOptions: { label: string; value: ReportPeriod }[] = [
-  { label: 'Hôm nay', value: 'today' },
-  { label: '7 ngày qua', value: '7days' },
-  { label: '30 ngày qua', value: '30days' },
-  { label: 'Tuỳ chỉnh', value: 'custom' },
-];
+  ...rawStoreOptions.value
+]);
 
 const activePeriod = computed(() => reportStore.filters.period);
 

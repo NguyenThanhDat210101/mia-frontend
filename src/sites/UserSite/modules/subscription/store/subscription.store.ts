@@ -6,6 +6,12 @@ import apiClient from '@/core/api/client'
 export const useSubscriptionStore = defineStore('subscription', () => {
   const plans = ref<Plan[]>([])
   const loading = ref(false)
+  const slugDescriptions = ref<Record<string, string>>({
+    'free': 'Trải nghiệm đầy đủ tính năng trong 1 tháng',
+    'monthly': 'Thanh toán linh hoạt từng tháng',
+    'quarterly': 'Chống gián đoạn, tiết kiệm hơn',
+    'yearly': 'Đầu tư dài hạn, tối ưu mọi chi phí'
+  })
 
   async function fetchPlans() {
     loading.value = true
@@ -21,7 +27,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     }
   }
 
-  async function subscribePlan(data: { store_id: number; plan_id: number; payment_gateway: string }) {
+  async function subscribePlan(data: { plan_id: number; payment_gateway: string }) {
     try {
       const response = await apiClient.post('/plans/subscribe', data)
       return response.data
@@ -34,6 +40,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
   return {
     plans,
     loading,
+    slugDescriptions,
     fetchPlans,
     subscribePlan
   }

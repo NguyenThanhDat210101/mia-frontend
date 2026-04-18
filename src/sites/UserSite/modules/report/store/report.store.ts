@@ -28,6 +28,13 @@ export const useReportStore = defineStore('report', () => {
   const hourlyDistribution = ref<HourlyData[]>([]);
   const paymentMethods = ref<PaymentMethodStat[]>([]);
 
+  const periodOptions = ref<{ label: string; value: ReportPeriod }[]>([
+    { label: 'Hôm nay', value: 'today' },
+    { label: '7 ngày qua', value: '7days' },
+    { label: '30 ngày qua', value: '30days' },
+    { label: 'Tuỳ chỉnh', value: 'custom' },
+  ]);
+
   // ─── Computed ─────────────────────────────────────────────────────────────
   const hasData = computed(() => summary.value !== null);
 
@@ -156,6 +163,7 @@ export const useReportStore = defineStore('report', () => {
     topProducts,
     hourlyDistribution,
     paymentMethods,
+    periodOptions,
     // computed
     hasData,
     formattedRevenue,

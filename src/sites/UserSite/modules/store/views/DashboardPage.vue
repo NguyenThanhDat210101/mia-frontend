@@ -6,18 +6,17 @@ import Btn from '@/components/atoms/Btn.vue';
 import Skeleton from '@/components/atoms/Skeleton.vue';
 import InputDate from '@/components/atoms/InputDate.vue';
 import Select from '@/components/atoms/Select.vue';
+import { useOrderStore } from '../store/order.store';
+import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const isLoading = ref(true);
+const orderStore = useOrderStore();
+const { storeOptions } = storeToRefs(orderStore);
 
+const isLoading = ref(true);
 const filterDate = ref(new Date().toISOString().substr(0, 10));
 const selectedStore = ref('');
-const storeOptions = [
-  { label: 'Chi nhánh Quận 1', value: 'q1' },
-  { label: 'Chi nhánh Thủ Đức', value: 'td' },
-  { label: 'Kho Tổng Hóc Môn', value: 'hm' },
-];
 
 onMounted(() => {
   setTimeout(() => {

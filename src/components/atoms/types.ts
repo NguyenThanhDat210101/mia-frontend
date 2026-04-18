@@ -37,7 +37,7 @@ export interface IconProps {
 }
 
 export interface InputProps {
-  modelValue: string | number;
+  modelValue: string | number | null;
   type?: string;
   placeholder?: string;
   required?: boolean;
@@ -47,7 +47,7 @@ export interface InputProps {
 }
 
 export interface InputDateProps {
-  modelValue: string;
+  modelValue: string | null;
   placeholder?: string;
   required?: boolean;
   icon?: string;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { storeToRefs } from "pinia";
 import { useProductStore } from "../store/product.store";
 import { useOrderStore } from "../store/order.store";
 import type { Product, OrderItem, Category, CreateOrderRequest } from "../types";
@@ -8,6 +9,7 @@ import Card from '@/components/atoms/Card.vue';
 import Btn from '@/components/atoms/Btn.vue';
 import Icon from '@/components/atoms/Icon.vue';
 import Input from '@/components/atoms/Input.vue';
+import Dialog from '@/components/atoms/Dialog.vue';
 
 const productStore = useProductStore();
 const orderStore = useOrderStore();
@@ -17,8 +19,13 @@ onMounted(() => {
   productStore.fetchProducts();
 });
 
-const categories: Category[] = ["Tất cả", "Coffee", "Tea", "Juice", "Bakery"];
-const activeCategory = ref<Category>("Tất cả");
+const tableNumber = ref<number | null>(null);
+const showTableModal = ref(false);
+
+const { products, loading: isProductsLoading, categories } = storeToRefs(productStore);
+const { loading: isOrdersLoading } = storeToRefs(orderStore);
+
+const activeCategory = ref<string>("Tất cả");
 const searchQuery = ref("");
 
 const filteredProducts = computed(() => {
@@ -72,12 +79,22 @@ const updateQuantity = (id: number, delta: number) => {
   }
 };
 
-const checkout = async () => {
+const checkout = () => {
   if (cart.value.length === 0) return;
+  showTableModal.value = true;
+};
 
+const completeOrder = async () => {
+  if (!tableNumber.value) {
+    alert("Vui lòng chọn số bàn");
+    return;
+  }
+
+  isProcessing.value = true;
   try {
     const orderRequest: CreateOrderRequest = {
-      store_id: 1, // Giả định store_id = 1, bạn có thể lấy từ store khác
+      store_id: 1, 
+      table_number: tableNumber.value,
       payment_method: selectedPaymentMethod.value,
       notes: "Đơn hàng từ kiosk",
       items: cart.value.map((item) => ({
@@ -88,15 +105,14 @@ const checkout = async () => {
 
     if (selectedPaymentMethod.value === "cash") {
       await orderStore.createOrder(orderRequest);
-      alert(
-        `Thanh toán Tiền mặt thành công: ${totalAmount.value.toLocaleString()}đ`,
-      );
+      showTableModal.value = false;
+      alert(`Đơn hàng bàn số ${tableNumber.value} đã được tạo thành công!`);
       cart.value = [];
+      tableNumber.value = null;
     } else {
       showPaymentModal.value = true;
-      isProcessing.value = true;
-
-      // Simulate processing for Stripe or MoMo
+      showTableModal.value = false;
+      
       await orderStore.createOrder(orderRequest);
 
       if (selectedPaymentMethod.value === "stripe") {
@@ -109,6 +125,10 @@ const checkout = async () => {
     }
   } catch (err: any) {
     alert(err.response?.data?.message || "Đã có lỗi xảy ra khi tạo đơn hàng");
+  } finally {
+    if (selectedPaymentMethod.value === "cash") {
+      isProcessing.value = false;
+    }
   }
 };
 
@@ -116,11 +136,38 @@ const confirmPayment = () => {
   alert("Thanh toán thành công!");
   showPaymentModal.value = false;
   cart.value = [];
+  tableNumber.value = null;
 };
 </script>
 
 <template>
   <div class="h-screen flex overflow-hidden bg-slate-50 dark:bg-neutral-900 text-slate-900 dark:text-white relative transition-colors duration-300">
+    <!-- Table Selection Modal -->
+    <Dialog v-model="showTableModal" :max-width="400">
+      <Card class="p-8 text-center" border>
+        <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Icon icon="mdi-table-chair" color="primary" size="large" />
+        </div>
+        <h2 class="text-2xl font-black mb-1">Số bàn của bạn?</h2>
+        <p class="text-slate-500 mb-6 font-medium">Vui lòng nhập số bàn để nhân viên phục vụ</p>
+        
+        <div class="space-y-4">
+          <Input 
+            v-model.number="tableNumber" 
+            label="Số bàn" 
+            type="number" 
+            placeholder="Ví dụ: 3" 
+            icon="mdi-numeric"
+            required
+          />
+          <div class="flex gap-3">
+            <Btn block variant="tonal" @click="showTableModal = false">HỦY</Btn>
+            <Btn block color="primary" :loading="isProcessing" @click="completeOrder">TIẾP TỤC</Btn>
+          </div>
+        </div>
+      </Card>
+    </Dialog>
+
     <!-- Payment Modal Overlay -->
     <div
       v-if="showPaymentModal"
