@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { User, LoginResponse, LoginCredentials, RegisterCredentials, RegisterResponse } from '../types'
 import apiClient, { setAccessToken } from '@/core/api/client'
+import { RoleName } from '@/core/enums/role.enum'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
@@ -14,7 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Chỉ yêu cầu setup cho Store Manager (Role ID = 1 hoặc theo logic Role của bạn)
     // Và khi Store chưa hoàn tất thiết lập
     return isAuthenticated.value && 
-           user.value?.role_id === 1 && 
+           user.value?.role?.name === RoleName.SystemAdmin && 
            user.value?.store && 
            !user.value.store.is_setup_completed
   })

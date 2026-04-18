@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
 import { RouteName } from '@/router/types'
+import { RoleName } from '@/core/enums/role.enum'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,6 +65,11 @@ const router = createRouter({
           path: 'setup-shifts',
           name: RouteName.SetupShifts,
           component: () => import('@/sites/UserSite/modules/shift/views/SetWorkingHoursPage.vue')
+        },
+        {
+          path: 'settings',
+          name: RouteName.Settings,
+          component: () => import('@/sites/UserSite/modules/settings/views/SettingsPage.vue')
         }
       ]
     },
@@ -127,9 +133,15 @@ router.beforeEach(async (to) => {
   // Khôi phục session nếu cần (chỉ chạy 1 lần khi load trang)
   await authStore.init()
 
-  // Simple Admin Check (Có thể mở rộng sau)
-  if (isAdminRoute && !authStore.isAuthenticated) {
-    return { name: RouteName.SignIn }
+  // Admin Route Protection (Chỉ cho phép System Admin)
+  if (isAdminRoute) {
+    if (!authStore.isAuthenticated) {
+      return { name: RouteName.SignIn }
+    }
+    if (authStore.user?.role?.name !== RoleName.SystemAdmin) {
+      // Nếu không phải System Admin mà vào /admin -> Về Dashboard của manager/user
+      return { name: RouteName.Dashboard }
+    }
   }
 
   if (!authStore.isAuthenticated && !isPublic) {
@@ -141,7 +153,7 @@ router.beforeEach(async (to) => {
     // Nếu đã đăng nhập mà cố vào SignIn/SignUp hoặc Home -> Sang Dashboard
     // Tuy nhiên nếu đang hướng tới Admin thì cứ để đi tiếp
     if (!isAdminRoute) {
-        const redirectName = authStore.user?.role_id === 1 ? RouteName.AdminDashboard : RouteName.Dashboard
+        const redirectName = authStore.user?.role?.name === RoleName.SystemAdmin ? RouteName.AdminDashboard : RouteName.Dashboard
         return { name: redirectName }
     }
   }

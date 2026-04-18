@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { AvatarProps } from './types';
+import Img from './Img.vue';
+import Icon from './Icon.vue';
 
 const props = withDefaults(defineProps<AvatarProps>(), {
-  size: 40,
+  size: 'default',
   color: 'primary',
 });
 
@@ -28,8 +30,8 @@ const iconSize = computed(() => {
     :color="color"
     :class="avatarClasses"
   >
-    <v-img v-if="src" :src="src" :alt="alt"></v-img>
-    <v-icon v-else-if="icon" color="white" :size="iconSize">{{ icon }}</v-icon>
+    <Img v-if="src" :src="src" :alt="alt" />
+    <Icon v-else-if="icon" :icon="icon" color="white" :size="iconSize" />
     <slot v-else></slot>
   </v-avatar>
 </template>

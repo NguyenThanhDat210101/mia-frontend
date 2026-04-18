@@ -14,6 +14,21 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('vuetify')) {
+              return 'vuetify-vendor';
+            }
+            return 'core-vendor';
+          }
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000,
+  },
   server: {
     host: 'mia-spa.local',
     port: 5173,

@@ -4,6 +4,8 @@ import { useThemeStore } from '@/core/stores/theme';
 import { useTheme } from 'vuetify';
 import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store';
 import ProgressCircular from '@/components/atoms/ProgressCircular.vue';
+import App from '@/components/atoms/App.vue';
+import Icon from '@/components/atoms/Icon.vue';
 
 const themeStore = useThemeStore();
 const authStore = useAuthStore();
@@ -11,7 +13,11 @@ const theme = useTheme();
 
 // Sync Vuetify theme with Pinia store
 watch(() => themeStore.themeName, (val) => {
-  theme.global.name.value = val;
+  if (typeof (theme as any).change === 'function') {
+    (theme as any).change(val);
+  } else {
+    theme.global.name.value = val;
+  }
 }, { immediate: true });
 
 onMounted(() => {
@@ -26,7 +32,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-app :theme="themeStore.isDark ? 'dark' : 'light'">
+  <App :theme="themeStore.isDark ? 'dark' : 'light'">
     <!-- Global Splash Screen -->
     <transition name="fade">
       <div v-if="!authStore.isInitialized" 
@@ -35,7 +41,7 @@ onMounted(() => {
           <!-- Logo/Brand placeholder -->
           <div class="mb-8 p-4 bg-primary/10 rounded-2xl animate-pulse">
             <div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
-              <v-icon color="white" size="32">mdi-storefront</v-icon>
+              <Icon icon="mdi-storefront" color="white" size="32" />
             </div>
           </div>
           
@@ -53,7 +59,7 @@ onMounted(() => {
     </transition>
 
     <router-view v-if="authStore.isInitialized" />
-  </v-app>
+  </App>
 </template>
 
 <style>

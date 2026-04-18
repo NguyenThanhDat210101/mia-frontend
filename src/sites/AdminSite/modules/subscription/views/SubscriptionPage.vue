@@ -8,6 +8,7 @@ import Divider from "@/components/atoms/Divider.vue";
 import Skeleton from "@/components/atoms/Skeleton.vue";
 import Input from "@/components/atoms/Input.vue";
 import Switch from "@/components/atoms/Switch.vue";
+import Dialog from "@/components/atoms/Dialog.vue";
 import type { Plan, PlanRequest } from "../types";
 import { useAdminSubscriptionStore } from "../store/admin-subscription.store";
 import { storeToRefs } from "pinia";
@@ -266,15 +267,15 @@ const SLUG_DESCRIPTIONS: Record<string, string> = {
 
             <div class="space-y-1">
               <label class="text-[10px] font-black text-blue-500 uppercase ml-1">Tính năng</label>
-              <div class="flex gap-1">
-                <Input v-model="newFeature" placeholder="Thêm..." class="!py-1 !text-xs" @keyup.enter="addFeature" />
-                <Btn icon="mdi-plus" color="primary" size="small" rounded="lg" :loading="isLoading" @click="addFeature" />
-              </div>
-              <div class="mt-2 space-y-1 max-h-[150px] overflow-y-auto pr-1">
+              <div v-if="editingForm.description.length > 0" class="mb-2 space-y-1 max-h-[150px] overflow-y-auto pr-1">
                 <div v-for="(feat, idx) in editingForm.description" :key="idx" class="flex items-start justify-between p-1.5 bg-white dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/5">
                   <span class="text-[11px] leading-tight mr-1">{{ feat }}</span>
                   <Btn icon="mdi-close" variant="text" size="small" class="!text-red-500 !p-0 !min-w-0 h-4 w-4" :loading="isLoading" @click="removeFeature(idx)" />
                 </div>
+              </div>
+              <div class="flex gap-1">
+                <Input v-model="newFeature" placeholder="Thêm..." class="!py-1 !text-xs" @keyup.enter="addFeature" />
+                <Btn icon="mdi-plus" color="primary" size="small" rounded="lg" :loading="isLoading" @click="addFeature" />
               </div>
             </div>
 
@@ -318,15 +319,15 @@ const SLUG_DESCRIPTIONS: Record<string, string> = {
             </div>
             <div class="space-y-1">
               <label class="text-[10px] font-black text-slate-400 uppercase ml-1">Tính năng</label>
-              <div class="flex gap-1">
-                <Input v-model="newFeature" placeholder="Thêm..." class="!py-1 !text-xs" @keyup.enter="addFeature" />
-                <Btn icon="mdi-plus" color="success" size="small" rounded="lg" :loading="isLoading" @click="addFeature" />
-              </div>
-              <div class="mt-2 space-y-1 max-h-[150px] overflow-y-auto pr-1">
+              <div v-if="editingForm.description.length > 0" class="mb-2 space-y-1 max-h-[150px] overflow-y-auto pr-1">
                 <div v-for="(feat, idx) in editingForm.description" :key="idx" class="flex items-start justify-between p-1.5 bg-white dark:bg-white/5 rounded-lg border border-slate-100 dark:border-white/5">
                   <span class="text-[11px] leading-tight mr-1">{{ feat }}</span>
                   <Btn icon="mdi-close" variant="text" size="small" class="!text-red-500 !p-0 !min-w-0 h-4 w-4" :loading="isLoading" @click="removeFeature(idx)" />
                 </div>
+              </div>
+              <div class="flex gap-1">
+                <Input v-model="newFeature" placeholder="Thêm..." class="!py-1 !text-xs" @keyup.enter="addFeature" />
+                <Btn icon="mdi-plus" color="success" size="small" rounded="lg" :loading="isLoading" @click="addFeature" />
               </div>
             </div>
           </div>
@@ -352,7 +353,7 @@ const SLUG_DESCRIPTIONS: Record<string, string> = {
     </div>
 
     <!-- Delete Confirmation -->
-    <v-dialog v-model="deleteDialog" max-width="400">
+    <Dialog v-model="deleteDialog" :max-width="400">
       <Card class="rounded-3xl p-8 text-center" variant="flat">
         <div class="w-16 h-16 bg-red-100 dark:bg-red-900/20 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
           <Icon icon="mdi-alert-circle" size="large" />
@@ -364,7 +365,7 @@ const SLUG_DESCRIPTIONS: Record<string, string> = {
           <Btn block color="primary" class="!bg-red-600 !border-red-600" rounded="xl" :loading="isLoading" @click="deletePlan">Xóa ngay</Btn>
         </div>
       </Card>
-    </v-dialog>
+    </Dialog>
   </div>
 </template>
 

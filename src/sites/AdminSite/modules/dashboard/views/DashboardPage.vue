@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Card from '@/components/atoms/Card.vue'
 import Btn from '@/components/atoms/Btn.vue'
+import Icon from '@/components/atoms/Icon.vue'
 import { useDashboard } from '../hooks/useDashboard'
 
 const { stats, activities, refreshStats } = useDashboard()
@@ -21,7 +22,7 @@ const { stats, activities, refreshStats } = useDashboard()
       <Card v-for="stat in stats" :key="stat.label" class="!border-none bg-white dark:bg-neutral-900 shadow-sm p-6 group hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
         <div class="flex justify-between items-start">
           <div :class="`p-3 rounded-2xl bg-${stat.color}/10 text-${stat.color}`">
-            <v-icon size="28">{{ stat.icon }}</v-icon>
+            <Icon :icon="stat.icon" size="large" />
           </div>
           <span :class="['text-xs font-bold px-2 py-1 rounded-full', stat.trend.startsWith('+') ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500']">
             {{ stat.trend }}
@@ -45,7 +46,7 @@ const { stats, activities, refreshStats } = useDashboard()
           </div>
         </div>
         <div class="flex flex-col items-center justify-center h-full text-slate-300 dark:text-neutral-700">
-          <v-icon size="64">mdi-chart-line</v-icon>
+          <Icon icon="mdi-chart-line" size="x-large" />
           <p class="mt-4 font-bold">Dữ liệu biểu đồ đang được tải...</p>
         </div>
       </Card>

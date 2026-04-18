@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
 import { useThemeStore } from '@/core/stores/theme'
 import { RouteName } from '@/router/types'
+import { RoleName } from '@/core/enums/role.enum'
 import Icon from '@/components/atoms/Icon.vue'
 import Btn from '@/components/atoms/Btn.vue'
 import Avatar from '@/components/atoms/Avatar.vue'
@@ -91,9 +92,19 @@ const handleLogout = async () => {
                         block
                         icon="mdi-view-dashboard-outline"
                         class="!justify-start text-slate-700 dark:text-gray-300 hover:!text-primary"
-                        @click="router.push({ name: authStore.user?.role_id === 1 ? RouteName.AdminDashboard : RouteName.Dashboard })"
+                        @click="router.push({ name: authStore.user?.role?.name === RoleName.SystemAdmin ? RouteName.AdminDashboard : RouteName.Dashboard })"
                       >
                         Dashboard
+                      </Btn>
+
+                      <Btn
+                        variant="text"
+                        block
+                        icon="mdi-cog-outline"
+                        class="!justify-start text-slate-700 dark:text-gray-300 hover:!text-primary"
+                        @click="router.push({ name: RouteName.Settings })"
+                      >
+                        Cài đặt
                       </Btn>
                       
                       <Btn

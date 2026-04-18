@@ -3,11 +3,11 @@ import { ref, computed, onMounted } from "vue";
 import { useProductStore } from "../store/product.store";
 import { useOrderStore } from "../store/order.store";
 import type { Product, OrderItem, Category, CreateOrderRequest } from "../types";
-import { useThemeStore } from '@/core/stores/theme";
-import Card from '@/components/atoms/Card.vue";
-import Btn from '@/components/atoms/Btn.vue";
-import Icon from '@/components/atoms/Icon.vue";
-import Input from '@/components/atoms/Input.vue";
+import { useThemeStore } from '@/core/stores/theme';
+import Card from '@/components/atoms/Card.vue';
+import Btn from '@/components/atoms/Btn.vue';
+import Icon from '@/components/atoms/Icon.vue';
+import Input from '@/components/atoms/Input.vue';
 
 const productStore = useProductStore();
 const orderStore = useOrderStore();

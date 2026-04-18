@@ -2,6 +2,10 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  role?: {
+    id: number;
+    name: string;
+  };
   role_id: number;
   userInfo?: UserInfo;
   created_at?: string;

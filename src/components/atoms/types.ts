@@ -12,11 +12,14 @@ export interface BtnProps {
   icon?: string | boolean;
   loading?: boolean;
   disabled?: boolean;
+  class?: any;
 }
 
 export interface CardProps {
   variant?: 'elevated' | 'flat' | 'outlined';
   border?: boolean;
+  class?: any;
+  padding?: string;
 }
 
 export interface ChipProps {
@@ -29,7 +32,8 @@ export interface ChipProps {
 export interface IconProps {
   icon: string;
   color?: string;
-  size?: 'small' | 'default' | 'large' | 'x-large' | string;
+  size?: 'small' | 'default' | 'large' | 'x-large' | string | number;
+  class?: any;
 }
 
 export interface InputProps {
@@ -39,7 +43,7 @@ export interface InputProps {
   required?: boolean;
   icon?: string;
   error?: string;
-  class?: string;
+  class?: any;
 }
 
 export interface InputDateProps {
@@ -47,7 +51,7 @@ export interface InputDateProps {
   placeholder?: string;
   required?: boolean;
   icon?: string;
-  class?: string;
+  class?: any;
 }
 
 export interface SelectProps {
@@ -56,7 +60,7 @@ export interface SelectProps {
   placeholder?: string;
   icon?: string;
   leftIcon?: string;
-  class?: string;
+  class?: any;
 }
 
 export interface SkeletonProps {
@@ -64,11 +68,11 @@ export interface SkeletonProps {
   width?: string;
   height?: string;
   rounded?: 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'none';
-  class?: string;
+  class?: any;
 }
 
 export interface SpanProps {
-  class?: string;
+  class?: any;
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | string;
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | 'large';
   weight?: string;
@@ -86,7 +90,7 @@ export interface ProgressCircularProps {
 }
 
 export interface LabelProps {
-  class?: string;
+  class?: any;
 }
 
 export interface AvatarProps {
@@ -95,7 +99,7 @@ export interface AvatarProps {
   icon?: string;
   src?: string;
   alt?: string;
-  class?: string;
+  class?: any;
 }
 
 export interface MenuProps {
@@ -110,4 +114,40 @@ export interface SwitchProps {
   color?: string;
   disabled?: boolean;
   hideDetails?: boolean;
+}
+
+export interface AppProps {
+  theme?: string;
+}
+
+export interface AlertProps {
+  type?: 'success' | 'error' | 'warning' | 'info';
+  variant?: 'elevated' | 'flat' | 'outlined' | 'tonal' | 'plain';
+  density?: 'default' | 'comfortable' | 'compact';
+  closable?: boolean;
+  class?: any;
+}
+
+export interface DialogProps {
+  modelValue: boolean;
+  maxWidth?: string | number;
+  persistent?: boolean;
+}
+
+export interface ImgProps {
+  src?: string;
+  alt?: string;
+  cover?: boolean;
+  height?: string | number;
+  width?: string | number;
+  class?: any;
+}
+
+export interface WindowProps {
+  modelValue?: any;
+  class?: any;
+}
+
+export interface WindowItemProps {
+  value?: any;
 }

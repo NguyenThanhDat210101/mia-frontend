@@ -25,7 +25,7 @@ const cardClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="cardClasses">
+  <div :class="[cardClasses, props.class]">
     <slot></slot>
   </div>
 </template>

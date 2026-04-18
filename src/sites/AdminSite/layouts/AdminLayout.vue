@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
 import { useThemeStore } from '@/core/stores/theme'
 import Icon from '@/components/atoms/Icon.vue'
 import Btn from '@/components/atoms/Btn.vue'
 import Avatar from '@/components/atoms/Avatar.vue'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const themeStore = useThemeStore()
 
 const menuItems = [
@@ -16,9 +18,15 @@ const menuItems = [
   { title: 'Cấu hình hệ thống', icon: 'mdi-cog', to: '/admin/settings' },
 ]
 
-const handleLogout = () => {
-  // Logic logout cho admin
-  router.push('/signin')
+const handleLogout = async () => {
+  try {
+    await authStore.logout()
+    router.push('/signin')
+  } catch (error) {
+    console.error('Logout failed:', error)
+    // Vẫn redirect về signin trong trường hợp lỗi API (local state đã được xóa trong auth store logout)
+    router.push('/signin')
+  }
 }
 </script>
 
@@ -29,7 +37,7 @@ const handleLogout = () => {
     <aside class="w-72 bg-white dark:bg-neutral-900 border-r border-slate-200 dark:border-white/5 flex flex-col sticky top-0 h-screen z-50">
       <div class="p-6 flex items-center gap-3">
         <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
-          <v-icon color="white">mdi-shield-check</v-icon>
+          <Icon icon="mdi-shield-check" color="white" />
         </div>
         <div>
           <h1 class="font-black text-lg tracking-tight leading-none">
@@ -43,7 +51,6 @@ const handleLogout = () => {
         <div v-for="item in menuItems" :key="item.to">
           <router-link :to="item.to" v-slot="{ isActive }">
             <button
-              @click="router.push(item.to)"
               :class="[
                 'w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group',
                 isActive 
@@ -51,7 +58,7 @@ const handleLogout = () => {
                   : 'text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-white/5'
               ]"
             >
-              <v-icon :color="isActive ? 'primary' : ''" :class="!isActive && 'group-hover:text-primary'">{{ item.icon }}</v-icon>
+              <Icon :icon="item.icon" :color="isActive ? 'primary' : ''" :class="!isActive && 'group-hover:text-primary'" />
               <span class="font-semibold text-sm">{{ item.title }}</span>
             </button>
           </router-link>
@@ -63,7 +70,7 @@ const handleLogout = () => {
           @click="handleLogout"
           class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors font-semibold text-sm"
         >
-          <v-icon color="error">mdi-logout</v-icon>
+          <Icon icon="mdi-logout" color="error" />
           <span>Đăng xuất</span>
         </button>
       </div>
@@ -75,7 +82,7 @@ const handleLogout = () => {
       <header class="h-16 border-b border-slate-200 dark:border-white/5 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md sticky top-0 z-40 px-8 flex items-center justify-between">
         <div class="flex items-center gap-4 text-slate-400">
           <span class="text-sm font-medium">Hệ thống</span>
-          <v-icon size="small">mdi-chevron-right</v-icon>
+          <Icon icon="mdi-chevron-right" size="small" />
           <span class="text-sm font-bold text-slate-900 dark:text-white">Admin Dashboard</span>
         </div>
 

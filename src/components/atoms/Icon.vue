@@ -4,6 +4,13 @@ import type { IconProps } from './types';
 
 const props = defineProps<IconProps>();
 
+const sizeStyles = computed(() => {
+  if (typeof props.size === 'number' || (typeof props.size === 'string' && !isNaN(Number(props.size)))) {
+    return { fontSize: `${props.size}px` };
+  }
+  return {};
+});
+
 const sizeClasses = computed(() => {
   switch (props.size) {
     case 'small': return 'text-sm';
@@ -29,5 +36,5 @@ const colorClass = computed(() => {
 </script>
 
 <template>
-  <i :class="['mdi', icon, sizeClasses, colorClass]" aria-hidden="true"></i>
+  <i :class="['mdi', icon, sizeClasses, colorClass, props.class]" :style="sizeStyles" aria-hidden="true"></i>
 </template>
