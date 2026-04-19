@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { RoutePath } from '@/router/types';
 import Card from '@/components/atoms/Card.vue';
 import Btn from '@/components/atoms/Btn.vue';
 import Icon from '@/components/atoms/Icon.vue';
@@ -21,7 +22,7 @@ const handleVerify = () => {
   // Simulate API call
   setTimeout(() => {
     isLoading.value = false;
-    router.push('/dashboard');
+    router.push(RoutePath.Dashboard);
   }, 1000);
 };
 

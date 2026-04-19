@@ -43,6 +43,9 @@ export interface InputProps {
   required?: boolean;
   icon?: string;
   error?: string;
+  inputmode?: string;
+  pattern?: string;
+  maxlength?: number;
   class?: any;
 }
 

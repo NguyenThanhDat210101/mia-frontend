@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
+import { RoutePath } from '@/router/types';
 import Card from '@/components/atoms/Card.vue';
 import Btn from '@/components/atoms/Btn.vue';
 import Icon from '@/components/atoms/Icon.vue';
@@ -7,8 +8,8 @@ import Icon from '@/components/atoms/Icon.vue';
 import { LANDING_FEATURES } from '@/core/constants';
 
 const router = useRouter();
-const goToPricing = () => router.push('/pricing');
-const goToSignup = () => router.push('/signup');
+const goToPricing = () => router.push(RoutePath.Pricing);
+const goToSignup = () => router.push(RoutePath.SignUp);
 
 const features = LANDING_FEATURES;
 </script>

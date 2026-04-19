@@ -9,7 +9,7 @@ import Divider from '@/components/atoms/Divider.vue';
 import Label from '@/components/atoms/Label.vue';
 import Input from '@/components/atoms/Input.vue';
 import Span from '@/components/atoms/Span.vue';
-import { RouteName } from '@/router/types';
+import { RouteName, RoutePath } from '@/router/types';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -41,7 +41,7 @@ const handleSignIn = async () => {
   }
 };
 
-const goToSignup = () => router.push('/signup');
+const goToSignup = () => router.push(RoutePath.SignUp);
 </script>
 
 <template>

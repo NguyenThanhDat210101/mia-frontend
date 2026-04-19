@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { Plan } from '../types'
 import apiClient from '@/core/api/client'
+import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
 
 export const useSubscriptionStore = defineStore('subscription', () => {
   const plans = ref<Plan[]>([])
@@ -30,6 +31,12 @@ export const useSubscriptionStore = defineStore('subscription', () => {
   async function subscribePlan(data: { plan_id: number; payment_gateway: string }) {
     try {
       const response = await apiClient.post('/plans/subscribe', data)
+      
+      if (response.data?.data?.plan) {
+        const authStore = useAuthStore()
+        authStore.setActivePlan(response.data.data.plan)
+      }
+      
       return response.data
     } catch (error) {
       console.error('Failed to subscribe plan', error)

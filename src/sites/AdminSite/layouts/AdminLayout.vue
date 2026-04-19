@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/sites/UserSite/modules/auth/store/auth.store'
 import { useThemeStore } from '@/core/stores/theme'
+import { RoutePath } from '@/router/types'
 import Icon from '@/components/atoms/Icon.vue'
 import Btn from '@/components/atoms/Btn.vue'
 import Avatar from '@/components/atoms/Avatar.vue'
@@ -11,22 +12,16 @@ const authStore = useAuthStore()
 const themeStore = useThemeStore()
 
 const menuItems = [
-  { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/admin' },
-  { title: 'Quản lý cửa hàng', icon: 'mdi-store', to: '/admin/stores' },
-  { title: 'Người dùng', icon: 'mdi-account-group', to: '/admin/users' },
-  { title: 'Gói dịch vụ', icon: 'mdi-package-variant', to: '/admin/subscriptions' },
-  { title: 'Cấu hình hệ thống', icon: 'mdi-cog', to: '/admin/settings' },
+  { title: 'Dashboard', icon: 'mdi-view-dashboard', to: RoutePath.AdminDashboard },
+  { title: 'Quản lý cửa hàng', icon: 'mdi-store', to: RoutePath.AdminStores },
+  { title: 'Người dùng', icon: 'mdi-account-group', to: RoutePath.AdminUsers },
+  { title: 'Gói dịch vụ', icon: 'mdi-package-variant', to: RoutePath.AdminSubscriptions },
+  { title: 'Cấu hình hệ thống', icon: 'mdi-cog', to: RoutePath.AdminSettings },
 ]
 
 const handleLogout = async () => {
-  try {
-    await authStore.logout()
-    router.push('/signin')
-  } catch (error) {
-    console.error('Logout failed:', error)
-    // Vẫn redirect về signin trong trường hợp lỗi API (local state đã được xóa trong auth store logout)
-    router.push('/signin')
-  }
+  router.push(RoutePath.SignIn)
+  authStore.logout()
 }
 </script>
 

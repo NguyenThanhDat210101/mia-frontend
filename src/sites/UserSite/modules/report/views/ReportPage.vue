@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { RoutePath } from '@/router/types';
 import Card from '@/components/atoms/Card.vue';
 import Icon from '@/components/atoms/Icon.vue';
 import Btn from '@/components/atoms/Btn.vue';
@@ -8,8 +9,8 @@ import Chip from '@/components/atoms/Chip.vue';
 import Skeleton from '@/components/atoms/Skeleton.vue';
 import InputDate from '@/components/atoms/InputDate.vue';
 import Select from '@/components/atoms/Select.vue';
-import { useReportStore } from '../store/report.store';
-import { useOrderStore } from '../../store/order.store';
+import { useReportStore } from '@/sites/UserSite/modules/report/store/report.store';
+import { useOrderStore } from '@/sites/UserSite/modules/store/store/order.store';
 import { storeToRefs } from 'pinia';
 import type { ReportPeriod } from '../types';
 
@@ -82,7 +83,7 @@ onMounted(() => {
           color="default"
           rounded="lg"
           class="!p-2 shrink-0"
-          @click="router.push('/dashboard')"
+          @click="router.push(RoutePath.Dashboard)"
         >
           <Icon icon="mdi-arrow-left" size="large" />
         </Btn>

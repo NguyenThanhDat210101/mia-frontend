@@ -2,12 +2,20 @@
 import Icon from './Icon.vue';
 import type { InputProps } from './types';
 
-withDefaults(defineProps<InputProps>(), {
+const props = withDefaults(defineProps<InputProps>(), {
   type: 'text',
-  required: false
+  required: false,
+  inputmode: undefined,
+  pattern: undefined,
+  maxlength: undefined
 });
 
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
+
+const handleInput = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  emit('update:modelValue', target.value);
+};
 </script>
 
 <template>
@@ -17,15 +25,18 @@ defineEmits(['update:modelValue']);
     </div>
     <input 
       :value="modelValue"
-      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      @input="handleInput"
       :type="type" 
       :required="required" 
       :placeholder="placeholder"
+      :inputmode="inputmode"
+      :pattern="pattern"
+      :maxlength="maxlength"
       :class="[
         'block w-full py-2.5 bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700/50 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all shadow-inner',
         icon ? 'pl-10 pr-3' : 'px-4',
         error ? 'border-red-500 focus:ring-red-500/50' : '',
-        $props.class
+        props.class
       ]"
     />
     <p v-if="error" class="mt-1 text-xs text-red-500 px-1">{{ error }}</p>

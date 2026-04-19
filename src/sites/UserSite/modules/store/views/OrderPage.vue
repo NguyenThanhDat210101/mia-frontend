@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 import { useProductStore } from "../store/product.store";
 import { useOrderStore } from "../store/order.store";
-import type { Product, OrderItem, Category, CreateOrderRequest } from "../types";
-import { useThemeStore } from '@/core/stores/theme';
+import type { Product, OrderItem, CreateOrderRequest } from "../types";
 import { useToast } from '@/composables/useToast';
+import { RoutePath } from '@/router/types';
 import Card from '@/components/atoms/Card.vue';
 import Btn from '@/components/atoms/Btn.vue';
 import Icon from '@/components/atoms/Icon.vue';
 import Input from '@/components/atoms/Input.vue';
 import Dialog from '@/components/atoms/Dialog.vue';
 
+const router = useRouter();
 const productStore = useProductStore();
 const orderStore = useOrderStore();
-const themeStore = useThemeStore();
 const toast = useToast();
 
 onMounted(() => {
@@ -24,8 +25,7 @@ onMounted(() => {
 const tableNumber = ref<number | null>(null);
 const showTableModal = ref(false);
 
-const { products, loading: isProductsLoading, categories } = storeToRefs(productStore);
-const { loading: isOrdersLoading } = storeToRefs(orderStore);
+const { categories } = storeToRefs(productStore);
 
 const activeCategory = ref<string>("Tất cả");
 const searchQuery = ref("");
@@ -95,7 +95,6 @@ const completeOrder = async () => {
   isProcessing.value = true;
   try {
     const orderRequest: CreateOrderRequest = {
-      store_id: 1, 
       table_number: tableNumber.value,
       payment_method: selectedPaymentMethod.value,
       notes: "Đơn hàng từ kiosk",
@@ -255,7 +254,18 @@ const confirmPayment = () => {
       <!-- Search & Category -->
       <div class="p-6 space-y-6">
         <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-black text-slate-900 dark:text-white">Coffee Menu</h1>
+          <div class="flex items-center gap-4">
+            <Btn
+              variant="flat"
+              color="default"
+              rounded="lg"
+              class="!p-2"
+              @click="router.push(RoutePath.Dashboard)"
+            >
+              <Icon icon="mdi-arrow-left" size="large" />
+            </Btn>
+            <h1 class="text-2xl font-black text-slate-900 dark:text-white">Tạo Order</h1>
+          </div>
           <div class="w-64">
             <Input
               v-model="searchQuery"

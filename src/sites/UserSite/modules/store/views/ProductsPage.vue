@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useProductStore } from '../store/product.store';
+import { RoutePath } from '@/router/types';
 import { useToast } from '@/composables/useToast';
 import Card from '@/components/atoms/Card.vue';
 import Btn from '@/components/atoms/Btn.vue';
@@ -13,6 +15,7 @@ import type { Product, Category } from '../types';
 
 import { storeToRefs } from 'pinia';
 
+const router = useRouter();
 const productStore = useProductStore();
 const toast = useToast();
 const { labeledCategories, loading: isLoading } = storeToRefs(productStore);
@@ -48,9 +51,20 @@ const addProduct = async () => {
 <template>
   <div class="max-w-7xl mx-auto px-4 py-12">
     <div class="flex justify-between items-center mb-10">
-      <div>
-        <h1 class="text-4xl font-black mb-2 text-slate-900 dark:text-white">Quản lý Sản phẩm</h1>
-        <p class="text-slate-500 dark:text-gray-400 font-medium">Danh mục đồ uống và thức ăn tại cửa hàng.</p>
+      <div class="flex items-center gap-4">
+        <Btn
+          variant="flat"
+          color="default"
+          rounded="lg"
+          class="!p-2 shrink-0"
+          @click="router.push(RoutePath.Dashboard)"
+        >
+          <Icon icon="mdi-arrow-left" size="large" />
+        </Btn>
+        <div>
+          <h1 class="text-3xl font-black text-slate-900 dark:text-white">Quản lý Sản phẩm</h1>
+          <p class="text-slate-500 dark:text-gray-400 font-medium">Danh mục đồ uống và thức ăn tại cửa hàng.</p>
+        </div>
       </div>
       <Btn color="primary" icon="mdi-plus" size="large">THÊM MỚI</Btn>
     </div>

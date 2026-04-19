@@ -4,10 +4,34 @@ import type { User, LoginResponse, LoginCredentials, RegisterCredentials, Regist
 import apiClient, { setAccessToken } from '@/core/api/client'
 import { RoleName } from '@/core/enums/role.enum'
 
+const STORAGE_KEY = 'active_plan'
+
+const getStoredPlan = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : null
+  } catch {
+    return null
+  }
+}
+
+const setStoredPlan = (plan: { id: number; name: string; slug: string } | null) => {
+  try {
+    if (plan) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(plan))
+    } else {
+      localStorage.removeItem(STORAGE_KEY)
+    }
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const token = ref<string | null>(null)
   const isInitialized = ref(false)
+  const activePlan = ref(getStoredPlan())
   
   const isAuthenticated = computed(() => !!token.value)
 
@@ -31,11 +55,18 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = userData
       token.value = access_token
       setAccessToken(access_token)
+      
+      if (userData.store?.active_plan) {
+        activePlan.value = userData.store.active_plan
+        setStoredPlan(userData.store.active_plan)
+      }
     } catch (error) {
       // Không có session hợp lệ hoặc refresh_token hết hạn
       user.value = null
       token.value = null
       setAccessToken(null)
+      activePlan.value = null
+      setStoredPlan(null)
     } finally {
       isInitialized.value = true
     }
@@ -49,6 +80,11 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = userData
       token.value = access_token
       setAccessToken(access_token)
+      
+      if (userData.store?.active_plan) {
+        activePlan.value = userData.store.active_plan
+        setStoredPlan(userData.store.active_plan)
+      }
       
       return response.data
     } catch (error) {
@@ -72,24 +108,31 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout() {
-    try {
-      await apiClient.post('/auth/logout')
-    } finally {
-      user.value = null
-      token.value = null
-      setAccessToken(null)
-    }
+    user.value = null
+    token.value = null
+    setAccessToken(null)
+    activePlan.value = null
+    setStoredPlan(null)
+    
+    apiClient.post('/auth/logout').catch(() => {})
+  }
+
+  function setActivePlan(plan: { id: number; name: string; slug: string }) {
+    activePlan.value = plan
+    setStoredPlan(plan)
   }
 
   return {
     user,
     token,
+    activePlan,
     isAuthenticated,
     isSetupRequired,
     isInitialized,
     init,
     login,
     register,
-    logout
+    logout,
+    setActivePlan
   }
 })

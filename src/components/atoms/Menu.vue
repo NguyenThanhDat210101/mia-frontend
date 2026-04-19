@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useThemeStore } from '@/core/stores/theme';
 import type { MenuProps } from './types';
 
-const props = withDefaults(defineProps<MenuProps>(), {
+const themeStore = useThemeStore();
+
+withDefaults(defineProps<MenuProps>(), {
   minWidth: '200px',
   rounded: true,
   offset: 8,
@@ -10,6 +13,7 @@ const props = withDefaults(defineProps<MenuProps>(), {
 
 <template>
   <v-menu
+    :theme="themeStore.themeName"
     :min-width="minWidth"
     :rounded="rounded"
     :offset="offset"

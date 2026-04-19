@@ -22,3 +22,24 @@ export enum RouteName {
   AdminSubscriptions = 'AdminSubscriptions',
   AdminSettings = 'AdminSettings',
 }
+
+export enum RoutePath {
+  Home = '/',
+  SignIn = '/signin',
+  SignUp = '/signup',
+  VerifyOtp = '/verify-otp',
+  Dashboard = '/',
+  StoreProducts = '/store/products',
+  StoreOrder = '/store/order',
+  Pricing = '/pricing',
+  MomoPayment = '/payment/momo',
+  ReportDetail = '/report',
+  SetupShifts = '/setup-shifts',
+  Settings = '/settings',
+  Admin = '/admin',
+  AdminDashboard = '/admin',
+  AdminStores = '/admin/stores',
+  AdminUsers = '/admin/users',
+  AdminSubscriptions = '/admin/subscriptions',
+  AdminSettings = '/admin/settings',
+}

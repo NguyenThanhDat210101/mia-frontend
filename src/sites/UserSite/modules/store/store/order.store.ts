@@ -14,7 +14,7 @@ export const useOrderStore = defineStore('order', () => {
   ])
   const error = ref<string | null>(null)
 
-  async function fetchOrders(params?: { store_id?: number, table_number?: number, limit?: number }) {
+  async function fetchOrders(params?: { store_id?: number, table_number?: number, phone?: string, date?: string, limit?: number }) {
     loading.value = true
     error.value = null
     try {

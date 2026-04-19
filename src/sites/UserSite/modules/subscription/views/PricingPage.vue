@@ -20,13 +20,31 @@ const authStore = useAuthStore();
 const toast = useToast();
 const { plans, loading: isLoading, slugDescriptions } = storeToRefs(subscriptionStore);
 
-const currentPlanSlug = computed(() => authStore.user?.store?.active_plan?.slug);
+const currentPlanId = computed(() => authStore.activePlan?.id);
 
 const isSubscribing = ref(false);
 const currentIndex = ref(0);
+const visibleCards = 3;
 
 const maxIndex = computed(() => {
-  return Math.max(0, plans.value.length - 3);
+  return Math.max(0, plans.value.length - visibleCards);
+});
+
+const currentPlanIndex = computed(() => {
+  if (currentPlanId.value) {
+    return plans.value.findIndex(p => p.id === currentPlanId.value);
+  }
+  return -1;
+});
+
+const displayIndex = computed(() => {
+  if (currentPlanIndex.value >= 0 && currentPlanIndex.value <= maxIndex.value) {
+    return currentPlanIndex.value;
+  }
+  if (currentPlanIndex.value > maxIndex.value) {
+    return maxIndex.value;
+  }
+  return 0;
 });
 
 const next = () => {
@@ -47,8 +65,11 @@ const getDiscountLabel = (slug: string) => {
   return '';
 };
 
-onMounted(() => {
-  subscriptionStore.fetchPlans();
+onMounted(async () => {
+  await subscriptionStore.fetchPlans();
+  if (displayIndex.value > 0) {
+    currentIndex.value = displayIndex.value;
+  }
 });
 
 const selectPlan = async (plan: Plan) => {
@@ -57,7 +78,6 @@ const selectPlan = async (plan: Plan) => {
     
     isSubscribing.value = true;
     try {
-      // Hardcoded store_id: 1 for consistency with other modules
       await subscriptionStore.subscribePlan({
         plan_id: plan.id,
         payment_gateway: 'free'
@@ -108,31 +128,34 @@ const selectPlan = async (plan: Plan) => {
 
     <div v-else class="relative max-w-6xl mx-auto group">
       <!-- Navigation Buttons -->
-      <div 
+      <button
         v-if="currentIndex > 0"
-        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-40 transition-all opacity-0 group-hover:opacity-100"
+        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-40 w-14 h-14 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800 shadow-xl border border-slate-200 dark:border-white/10 text-blue-500 hover:scale-110 active:scale-95 transition-all duration-200"
+        @click="prev"
       >
-        <Btn 
-          icon="mdi-chevron-left" 
-          rounded="full" 
-          size="large" 
-          color="white" 
-          class="shadow-xl backdrop-blur-md bg-white/10 border border-white/20 text-blue-500"
-          @click="prev"
-        />
-      </div>
+        <Icon icon="mdi-chevron-left" size="large"></Icon>
+      </button>
 
-      <div 
+      <button
         v-if="currentIndex < maxIndex"
-        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-40 transition-all opacity-0 group-hover:opacity-100"
+        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-40 w-14 h-14 flex items-center justify-center rounded-full bg-white dark:bg-neutral-800 shadow-xl border border-slate-200 dark:border-white/10 text-blue-500 hover:scale-110 active:scale-95 transition-all duration-200"
+        @click="next"
       >
-        <Btn 
-          icon="mdi-chevron-right" 
-          rounded="full" 
-          size="large" 
-          color="white" 
-          class="shadow-xl backdrop-blur-md bg-white/10 border border-white/20 text-blue-500"
-          @click="next"
+        <Icon icon="mdi-chevron-right" size="large"></Icon>
+      </button>
+
+      <!-- Dots Indicator -->
+      <div class="flex justify-center gap-3 mb-4">
+        <button
+          v-for="(_, idx) in Math.max(1, plans.length - visibleCards + 1)"
+          :key="idx"
+          class="transition-all duration-300 rounded-full"
+          :class="[
+            currentIndex === idx 
+              ? 'w-8 bg-blue-500' 
+              : 'w-2 bg-slate-300 dark:bg-white/20 hover:w-4'
+          ]"
+          @click="currentIndex = idx"
         />
       </div>
 
@@ -140,7 +163,7 @@ const selectPlan = async (plan: Plan) => {
       <div class="overflow-hidden px-1 py-16 -mt-6">
         <div 
           class="flex transition-transform duration-500 ease-out"
-          :style="{ transform: `translateX(-${currentIndex * (100 / (plans.length > 3 ? 3 : plans.length))}%)` }"
+          :style="{ transform: `translateX(-${currentIndex * (100 / visibleCards)}%)` }"
         >
           <div 
             v-for="plan in plans" 
@@ -158,13 +181,13 @@ const selectPlan = async (plan: Plan) => {
               border
             >
               <!-- Nhãn dán Phổ Biến HOẶC Gói Hiện Tại -->
-              <div v-if="plan.slug === currentPlanSlug" class="absolute -top-5 right-6 z-30">
-                 <Chip color="success" variant="elevated" class="font-black tracking-wider shadow-lg" elevation="8" size="large">
-                     <Icon icon="mdi-check-decagram" class="mr-1"></Icon>
-                     BẠN ĐANG DÙNG
-                 </Chip>
-              </div>
-              <div v-else-if="plan.is_popular" class="absolute -top-5 right-6 z-30">
+<div v-if="plan.id === currentPlanId" class="absolute -top-5 right-6 z-30">
+                  <Chip color="success" variant="elevated" class="font-black tracking-wider shadow-lg" elevation="8" size="large">
+                      <Icon icon="mdi-check-decagram" class="mr-1"></Icon>
+                      BẠN ĐANG DÙNG
+                  </Chip>
+               </div>
+               <div v-else-if="plan.is_popular" class="absolute -top-5 right-6 z-30">
                  <Chip color="primary" variant="elevated" class="font-black tracking-wider shadow-lg" elevation="8" size="large">
                      <Icon icon="mdi-crown" class="mr-1"></Icon>
                      PHỔ BIẾN NHẤT
@@ -213,11 +236,11 @@ const selectPlan = async (plan: Plan) => {
                   size="x-large"
                   rounded="xl"
                   class="font-black tracking-wider hover:opacity-90 active:scale-95 transition-all text-uppercase"
-                  :class="!plan.is_popular && plan.slug !== currentPlanSlug && 'border-slate-200 dark:border-white/20 text-slate-700 dark:text-white'"
-                  :disabled="plan.slug === currentPlanSlug"
+                  :class="!plan.is_popular && plan.id !== currentPlanId && 'border-slate-200 dark:border-white/20 text-slate-700 dark:text-white'"
+                  :disabled="plan.id === currentPlanId"
                   @click="selectPlan(plan)"
                 >
-                  <template v-if="plan.slug === currentPlanSlug">GÓI HIỆN TẠI</template>
+                  <template v-if="plan.id === currentPlanId">GÓI HIỆN TẠI</template>
                   <template v-else-if="plan.is_free">BẮT ĐẦU MIỄN PHÍ</template>
                   <template v-else>CHỌN GÓI NÀY</template>
                 </Btn>

@@ -12,7 +12,7 @@ defineEmits(['update:modelValue']);
 
 <template>
   <div class="relative w-full group">
-    <div v-if="icon" class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-500 group-focus-within:text-blue-500 transition-colors z-10">
+    <div v-if="icon" class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 transition-colors z-10">
       <Icon :icon="icon" size="small"></Icon>
     </div>
     <input 
@@ -20,7 +20,7 @@ defineEmits(['update:modelValue']);
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       type="date" 
       :required="required" 
-      class="block w-full py-2.5 bg-neutral-800 border border-neutral-700/50 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all shadow-inner appearance-none custom-date-input relative"
+      class="block w-full py-2.5 bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700/50 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all shadow-inner appearance-none custom-date-input relative"
       :class="[
         icon ? 'pl-10 pr-3' : 'px-4',
         $props.class
@@ -37,7 +37,7 @@ defineEmits(['update:modelValue']);
   position: absolute;
   right: 12px;
 }
-.custom-date-input::-webkit-calendar-picker-indicator:hover {
+.custom-date-input:hover::-webkit-calendar-picker-indicator {
   opacity: 1;
 }
 </style>

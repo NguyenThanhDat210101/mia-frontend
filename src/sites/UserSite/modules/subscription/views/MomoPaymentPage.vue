@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { RoutePath } from '@/router/types';
 import Card from '@/components/atoms/Card.vue';
 import Icon from '@/components/atoms/Icon.vue';
 import Btn from '@/components/atoms/Btn.vue';
@@ -14,7 +15,7 @@ const planPrice = ref(route.query.price || '0 VNĐ');
 const isChecking = ref(true);
 
 const goBack = () => {
-  router.push('/pricing');
+  router.push(RoutePath.Pricing);
 };
 
 const checkPaymentStatus = () => {
